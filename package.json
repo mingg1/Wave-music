@@ -6,6 +6,9 @@
   "license": "GPL-3.0 License",
   "version": "0.1.0",
   "private": true,
+  "author": "Minji choi",
+  "repository": "https://github.com/mingg1/sssf-project",
+  "license": "GPL-3.0 License",
   "dependencies": {
     "@apollo/client": "^3.5.10",
     "@graphql-yoga/node": "^2.1.0",
