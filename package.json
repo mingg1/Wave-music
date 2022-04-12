@@ -1,5 +1,9 @@
 {
   "name": "sssf-project",
+  "author": "Minji Choi",
+  "description": "GQL project from sssf course",
+  "repository": "https://github.com/mingg1/sssf-project",
+  "license": "GPL-3.0 License",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
