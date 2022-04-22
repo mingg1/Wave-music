@@ -16,4 +16,10 @@ dotenv.config();
   }
 })();
 
-export default mongoose.connection;
+const db = mongoose.connection;
+
+const handleOpen = () => console.log('Connected to DB!');
+const handleError = (err) => console.log('db error', err);
+
+db.on('error', handleError);
+db.once('open', handleOpen);
