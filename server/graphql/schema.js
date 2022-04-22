@@ -1,19 +1,9 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import resolvers from './resolver.js';
+import artistResolver from './resolvers/artistResolver.js';
+import userResolver from './resolvers/userResolver.js';
+import userSchema from './schemas/userSchema.js';
 
-const typeDef = /* GraphQL */ `
-  type Track {
-    name: String!
-    url: String
-  }
+const typeDef = /* GraphQL */ ``;
 
-  type Query {
-    tracks: [Track]
-  }
-`;
-
-const schema = makeExecutableSchema({
-  resolvers: resolvers,
-  typeDefs: [typeDef],
-});
-export default schema;
+export default [resolvers, userResolver, artistResolver];
