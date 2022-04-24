@@ -12,11 +12,8 @@ export default {
     login: async (parent, args, { req }) => {
       // call passport login (done in class)
       req.body = args;
-      return { value: await login(req) };
-    },
-    song: async (_, __, { dataSources }) => {
-      const { access_token } = await dataSources.tokenAPI.getToken();
-      return { token: access_token };
+
+      return await login(req);
     },
   },
   Mutation: {
