@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express';
 export default gql`
   extend type Query {
     artist(id: ID!): Artist
-    related_artists(id: ID!): [Artist]
+    relatedArtists(id: ID!): [Artist]
     artist_top_tracks(id: ID!): [Track]
     artist_albums(id: ID!): [Album]
   }

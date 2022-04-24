@@ -2,22 +2,9 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   extend type Query {
-    featured_playlists: [PlayList]
-    playlist_tracks(id: ID!): [TrackInfo]
-  }
-
-  type PlayList {
-    id: ID
-    images: [Image]
-    name: String!
-    owner: Owner
-    createdAt: Int
-  }
-
-  type Owner {
-    id: ID
-    type: String
-    display_name: String
+    playlistTracks(playlistId: ID!): [TrackInfo]
+    tracks(ids: String!): [Track]
+    recommendations(id: ID!): [Track]
   }
 
   type TrackInfo {
@@ -29,7 +16,6 @@ export default gql`
     duration_ms: Int
     name: String!
     preview_url: String
-    images: [Image]
     album: [Album]
     artists: [Artist]
     type: String
