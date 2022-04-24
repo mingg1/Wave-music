@@ -1,18 +1,18 @@
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import typeDefs from './graphql/schemas/index';
-import resolvers from './graphql/schema';
+import resolvers from './graphql/resolvers/index';
 import './db/db';
 import { checkAuth } from './utils/auth';
 import SpotifyAPI from './graphql/datasources/spotifyAPI';
-import { TokenAPI } from './graphql/dataSources/tokenAPI';
+import TokenAPI from './graphql/dataSources/tokenAPI';
+import cors from 'cors';
 
 (async () => {
   try {
     const server = new ApolloServer({
-      cors: true,
-      resolvers,
       typeDefs,
+      resolvers,
       dataSources: () => {
         return {
           tokenAPI: new TokenAPI(),
@@ -25,11 +25,26 @@ import { TokenAPI } from './graphql/dataSources/tokenAPI';
           return { currentUser, req };
         }
       },
+      async onHealthCheck() {
+        if (everythingLooksHealthy()) {
+          return;
+        } else {
+          throw new Error('...');
+        }
+      },
     });
     const app = express();
 
+    const corsOptions = {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+    };
+    app.use(cors(corsOptions));
+
     await server.start();
-    server.applyMiddleware({ app });
+    server.applyMiddleware({ app, cors: false });
 
     app.listen(4000, () => {
       console.log(
