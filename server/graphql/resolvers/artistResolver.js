@@ -5,7 +5,7 @@ export default {
       const artist = await dataSources.spotifyAPI.getArtist(sf_token, id);
       return artist;
     },
-    related_artists: async (_, { id }, { dataSources, req }) => {
+    relatedArtists: async (_, { id }, { dataSources, req }) => {
       const { sf_token } = req.headers;
       const { artists: relatedArtists } =
         await dataSources.spotifyAPI.getSimilarArtists(sf_token, id);

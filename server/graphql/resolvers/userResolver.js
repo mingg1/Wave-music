@@ -5,16 +5,18 @@ import { login } from '../../utils/auth';
 
 export default {
   Query: {
-    user: async (parent, args) => {
+    user: async (parent, { id }) => {
       // find user by id
-      return await User.findById(args.id);
+      return await User.findById(id);
     },
     login: async (parent, args, { req }) => {
       // call passport login (done in class)
       req.body = args;
-
       return await login(req);
     },
+    // userPlaylists: async (_, { id }) => {
+    //   //return await User.
+    // },
   },
   Mutation: {
     registerUser: async (parent, args) => {
