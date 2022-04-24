@@ -1,10 +1,11 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  type Query {
-    artist(id: String): Artist
-    related_artists(id: String): [Artist]
-    featured_playlists: [Album]
+  extend type Query {
+    artist(id: ID!): Artist
+    related_artists(id: ID!): [Artist]
+    artist_top_tracks(id: ID!): [Track]
+    artist_albums(id: ID!): [Album]
   }
 
   type Artist {
@@ -15,12 +16,7 @@ export default gql`
     type: String!
   }
 
-  type Song {
-    name: String!
-    url: String
-  }
-
-  type Query {
-    tracks: [Song]
+  type TrackInfo {
+    track: Track
   }
 `;
