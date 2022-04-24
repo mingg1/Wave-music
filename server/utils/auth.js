@@ -25,7 +25,7 @@ const login = (req) => {
           reject(err);
         }
         const token = jwt.sign(req.user, 'secret:D');
-        resolve(token);
+        resolve({ ...user, token, id: user._id });
       });
     })(req);
   });
