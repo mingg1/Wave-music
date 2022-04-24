@@ -1,6 +1,6 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
 
-export class TokenAPI extends RESTDataSource {
+class TokenAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = 'https://accounts.spotify.com/api/';
@@ -22,3 +22,4 @@ export class TokenAPI extends RESTDataSource {
     return data;
   };
 }
+export default TokenAPI;

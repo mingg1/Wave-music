@@ -8,6 +8,18 @@ class SpotifyAPI extends RESTDataSource {
     this.baseURL = 'https://api.spotify.com/v1/';
   }
 
+  async getPlayListItems(token, id) {
+    const result = await this.get(
+      `playlists/${id}/tracks/`,
+      {},
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+    const items = result.items;
+    return items;
+  }
+
   async getFeaturedPlayList(token) {
     const result = await this.get(
       `browse/featured-playlists`,
@@ -22,21 +34,37 @@ class SpotifyAPI extends RESTDataSource {
   }
 
   // sample id: 7oJoc76R3JMv7dZhxgi7zD
-  async getArtist(authorization, id) {
+  async getArtist(token, id) {
     return this.get(
       `artists/${id}`,
       {},
       {
-        headers: { authorization },
+        headers: { authorization: `Bearer ${token}` },
       }
     );
   }
 
-  async getSimilarArtists(authorization, id) {
+  async getSimilarArtists(token, id) {
     return this.get(
       `artists/${id}/related-artists`,
       {},
-      { headers: { authorization } }
+      { headers: { authorization: `Bearer ${token}` } }
+    );
+  }
+
+  async getArtistAlbums(token, id) {
+    return this.get(
+      `artists/${id}/albums`,
+      { market: 'US' },
+      { headers: { authorization: `Bearer ${token}` } }
+    );
+  }
+
+  async getArtistsTopTracks(token, id) {
+    return this.get(
+      `artists/${id}/top-tracks`,
+      { market: 'US' },
+      { headers: { authorization: `Bearer ${token}` } }
     );
   }
 
