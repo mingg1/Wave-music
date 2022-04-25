@@ -10,7 +10,7 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    console.log(graphQLErrors);
+    console.log('err: ', graphQLErrors);
   }
 
   if (networkError) {
@@ -20,12 +20,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 const authLink = setContext(async (_, { headers }) => {
-  const token = sessionStorage.getItem('sf-token');
+  const { sf_token } = JSON.parse(localStorage.getItem('sf-token')) || {};
+
   return {
     headers: {
       ...headers,
-
-      token,
+      sf_token,
     },
   };
 });

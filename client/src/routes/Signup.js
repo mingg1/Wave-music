@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import AuthContext from '../contexts/auth-context';
@@ -12,9 +12,13 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-const LOGIN = gql`
-  query Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+const REGISTER = gql`
+  mutation RegisterUser(
+    $nickname: String!
+    $password: String!
+    $email: String!
+  ) {
+    registerUser(nickname: $nickname, password: $password, email: $email) {
       id
       nickname
       email
@@ -26,7 +30,7 @@ const LOGIN = gql`
 const Login = () => {
   const { isLoggedIn, onLogin } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [login] = useLazyQuery(LOGIN);
+  const [userRegister] = useMutation(REGISTER);
   const navigate = useNavigate();
   const {
     register,
@@ -43,17 +47,18 @@ const Login = () => {
     }
   }, []);
 
-  const handleLogin = async (data) => {
-    const { email, password } = data;
-
+  const handleSignup = async (data) => {
+    const { nickname, email, password } = data;
+    console.log(data);
     setLoading(true);
 
     try {
       const {
         error,
-        data: { login: user },
-      } = await login({
+        data: { registerUser: user },
+      } = await userRegister({
         variables: {
+          nickname,
           email,
           password,
         },
@@ -61,13 +66,11 @@ const Login = () => {
       console.log(user);
       if (user) {
         setLoading(false);
-        console.log(user);
-        onLogin(user);
-        navigate('/');
+        navigate('/login');
       }
       if (!user || error) {
         setLoading(false);
-
+        console.log(error);
         setLoginError('User not found, please try again!');
       }
     } catch (error) {
@@ -76,15 +79,40 @@ const Login = () => {
     }
   };
   const onError = (error) => {
-    console.log(error, errors);
+    console.log(error);
   };
 
   return (
     <div style={{ height: '100%', paddingTop: 80 }}>
       <Typography component="h1" variant="h4">
-        Log in
+        Sign up
       </Typography>
-      <Box component="form" onSubmit={handleSubmit(handleLogin, onError)}>
+      <Box component="form" onSubmit={handleSubmit(handleSignup, onError)}>
+        <Controller
+          name="nickname"
+          control={control}
+          rules={{
+            pattern: {
+              minLength: {
+                value: 3,
+                message: 'Nickname should be more than 3 letters.',
+              },
+            },
+          }}
+          render={() => (
+            <TextField
+              {...register('nickname')}
+              type="text"
+              margin="normal"
+              required
+              fullWidth
+              label="Nickname"
+            />
+          )}
+        />
+        <Typography style={{ marginTop: '2px' }}>
+          {errors?.nickname?.message}
+        </Typography>
         <Controller
           name="email"
           control={control}
@@ -105,16 +133,17 @@ const Login = () => {
             />
           )}
         />
-
         <Typography style={{ marginTop: '2px' }}>
           {errors?.email?.message}
         </Typography>
-
         <Controller
           name="password"
           control={control}
           rules={{
-            required: true,
+            minLength: {
+              value: 6,
+              message: 'Password should be more than 6 letters.',
+            },
           }}
           render={() => (
             <TextField
@@ -127,7 +156,10 @@ const Login = () => {
             />
           )}
         />
-        <Typography style={{ marginTop: '2px' }}>{loginError}</Typography>
+
+        <Typography style={{ marginTop: '2px' }}>
+          {errors?.password?.message}
+        </Typography>
 
         <Button
           type="submit"
@@ -142,11 +174,11 @@ const Login = () => {
             thickness={2}
             style={{ visibility: !loading ? 'hidden' : 'visible' }}
           />
-          Log In
+          Sign Up
         </Button>
       </Box>
-      <Link href="/signup" variant="body2">
-        {"Don't have an account?"}
+      <Link href="/login" variant="body2">
+        Already have an account?
       </Link>
     </div>
   );
