@@ -122,12 +122,13 @@ class SpotifyAPI extends RESTDataSource {
         headers: { authorization: `Bearer ${token}` },
       }
     );
+    console.log(result.tracks);
     return result.tracks;
   }
 
   async getRecommendations(token, trackId) {
     const data = await this.getTracks(token, trackId);
-    console.log(data.map((d) => d.artists.map((a) => a.id)));
+
     // const seedArtists = data.artists
     //   .filter((artist) => artist.name)
     //   .toStriing();

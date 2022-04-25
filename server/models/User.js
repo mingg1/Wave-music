@@ -11,10 +11,16 @@ const userSchema = new mongoose.Schema({
   },
   nickname: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  favorites: { type: mongoose.Types.ObjectId, ref: 'Favorite' },
+  // playlists,
+  // posts,
+  // comments,
 });
 
 userSchema.pre('save', async function () {
-  this.password = await bcrypt.hash(this.password, 12);
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
 });
 
 const User = mongoose.model('User', userSchema);
