@@ -16,7 +16,7 @@ export default gql`
     duration_ms: Int
     name: String!
     preview_url: String
-    album: [Album]
+    album: Album
     artists: [Artist]
     type: String
   }

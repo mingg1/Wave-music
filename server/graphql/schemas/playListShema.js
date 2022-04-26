@@ -10,5 +10,7 @@ export default gql`
     images: [Image]
     name: String!
     createdAt: Int
+    description: String
+    collaborative: Boolean
   }
 `;

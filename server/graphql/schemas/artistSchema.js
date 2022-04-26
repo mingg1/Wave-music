@@ -4,8 +4,8 @@ export default gql`
   extend type Query {
     artist(id: ID!): Artist
     relatedArtists(id: ID!): [Artist]
-    artist_top_tracks(id: ID!): [Track]
-    artist_albums(id: ID!): [Album]
+    artistTopTracks(id: ID!): [Track]
+    artistAlbums(id: ID!): [Album]
   }
 
   type Artist {
