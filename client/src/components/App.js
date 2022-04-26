@@ -10,10 +10,11 @@ import Home from '../routes/Home';
 import PlayListDetail from '../routes/PlayListDetail';
 
 import Login from '../routes/Login';
-import AuthContext, { AuthContextProvider } from '../contexts/auth-context';
+import { AuthContextProvider } from '../contexts/auth-context';
 import TopHeader from './MainHeader/TopHeader';
 import styled from 'styled-components';
 import SignUp from '../routes/Signup';
+import ArtistDetail from '../routes/ArtistDetail';
 
 const Container = styled.div`
   display: flex;
@@ -39,7 +40,7 @@ const App = () => {
             <Route exact path="/logout" element={<Login />} />
             <Route exact path="/signup" element={<SignUp />} />
             <Route exact path="/track/:id" element={<Login />} />
-            <Route exact path="/artist/:id" element={<Login />} />
+            <Route exact path="/artist/:id" element={<ArtistDetail />} />
             <Route exact path="/album/:id" element={<Login />} />
             <Route exact path="/playlist" element={<PlayListDetail />} />
             <Route exact path="/playlist/:id" element={<PlayListDetail />} />
