@@ -5,6 +5,7 @@ export default gql`
     user(id: ID!): User
     login(email: String!, password: String!): User
     userFavorites(id: ID): Favorite
+    userByNickname(nickname: String): User
   }
 
   extend type Mutation {
@@ -25,5 +26,7 @@ export default gql`
     id: ID
     owner: User
     tracks: [Track]
+    artists: [Artist]
+    albums: [Album]
   }
 `;
