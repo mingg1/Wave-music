@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   extend type Query {
-    albums(ids: String!): [Album]
+    albums(ids: ID!): [Album]
     newReleases: [Album]
     albumTracks(id: ID!): [Track]
   }
