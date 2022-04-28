@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import React, { useContext, useEffect, useState } from 'react';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { IoMdAdd } from 'react-icons/io';
 import { Button } from '@mui/material';
 
 const TOGGLE_FAVORITE = gql`
@@ -39,27 +39,22 @@ const saveFavorite = async (itemId, type, userId, mutation) => {
   //setUserFavorites(items);
 };
 
-const LikeButton = (props) => {
+const AddTrackButton = (props) => {
   const { trackId, type, userId, isLiked } = props;
-  const [liked, setLiked] = useState(isLiked);
+
   const [addFavorite] = useMutation(TOGGLE_FAVORITE);
 
-  useEffect(() => {
-    // setLiked(isLiked);
-  }, [isLiked]);
-  // ♥ ♡
   return (
     <Button
-      size="x-small"
       style={{ fontSize: 25, padding: 0 }}
+      size="x-small"
       onClick={() => {
         saveFavorite(trackId, type, userId, addFavorite);
-        setLiked(!liked);
       }}
     >
-      {liked ? <FaHeart /> : <FaRegHeart />}
+      <IoMdAdd />
     </Button>
   );
 };
 
-export default LikeButton;
+export default AddTrackButton;
