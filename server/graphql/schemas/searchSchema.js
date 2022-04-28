@@ -8,7 +8,7 @@ export default gql`
   type SearchResults {
     albums: AlbumItem
     artists: ArtistItem
-    tarck: TrackItem
+    tracks: TrackItem
     users: [User]
   }
 
