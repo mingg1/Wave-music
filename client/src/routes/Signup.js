@@ -83,7 +83,9 @@ const Login = () => {
   };
 
   return (
-    <div style={{ height: '100%', paddingTop: 80 }}>
+    <div
+      style={{ height: '100%', paddingTop: 80, width: '60%', maxWidth: 480 }}
+    >
       <Typography component="h1" variant="h4">
         Sign up
       </Typography>

@@ -58,19 +58,19 @@ const Login = () => {
           password,
         },
       });
-      console.log(user);
+
       if (user) {
         setLoading(false);
-        console.log(user);
-        onLogin(user);
+        await onLogin(user);
         navigate('/');
       }
       if (!user || error) {
         setLoading(false);
-
+        console.log(user, error);
         setLoginError('User not found, please try again!');
       }
     } catch (error) {
+      console.log(error);
       setLoading(false);
       setLoginError('User not found, please try again!');
     }
@@ -80,7 +80,9 @@ const Login = () => {
   };
 
   return (
-    <div style={{ height: '100%', paddingTop: 80 }}>
+    <div
+      style={{ height: '100%', paddingTop: 80, width: '60%', maxWidth: 480 }}
+    >
       <Typography component="h1" variant="h4">
         Log in
       </Typography>
