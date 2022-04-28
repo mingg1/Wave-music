@@ -16,6 +16,12 @@ const GET_USER_FAVORITES = gql`
         id
         name
       }
+      albums {
+        id
+      }
+      artists {
+        id
+      }
     }
   }
 `;
@@ -49,19 +55,19 @@ export const TokenContextProvider = (props) => {
     setSfToken(data);
   };
 
-  const getFavorites = async () => {
+  const getFavorites = async (userId) => {
     const {
-      data: {
-        userFavorites: { tracks },
-      },
+      data: { userFavorites },
       refetch,
     } = await getUserFavorites({
-      variables: { userId: JSON.parse(localStorage.getItem('user')).id },
+      variables: {
+        userId: JSON.parse(localStorage.getItem('user'))?.id || userId,
+      },
     });
-    console.log(tracks);
-    if (tracks !== null && tracks[0] !== null) {
+    console.log(userFavorites);
+    if (userFavorites !== null && userFavorites[0] !== null) {
       setRefetchFavorites(refetch);
-      setUserFavorites(tracks);
+      setUserFavorites(userFavorites);
     }
   };
 
@@ -85,6 +91,7 @@ export const TokenContextProvider = (props) => {
         userFavorites,
         refetchFavorites,
         setUserFavorites,
+        getFavorites,
       }}
     >
       {props.children}

@@ -1,5 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import TokenContext from '../contexts/token-context';
 
 const AuthContext = React.createContext({
   onLogout: () => {},
@@ -10,18 +10,23 @@ export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem('user-token') || false
   );
+  const { getFavorites, userFavorites, setUserFavorites } =
+    useContext(TokenContext);
 
   const logoutHandler = () => {
     localStorage.removeItem('user-token');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
+    setUserFavorites([]);
+    console.log(userFavorites);
   };
 
-  const loginHandler = (res) => {
+  const loginHandler = async (res) => {
     const { token, ...user } = res;
     localStorage.setItem('user-token', token);
     localStorage.setItem('user', JSON.stringify(user));
     setIsLoggedIn(true);
+    await getFavorites(user.id);
   };
 
   return (
