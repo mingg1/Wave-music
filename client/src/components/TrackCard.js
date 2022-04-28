@@ -9,7 +9,7 @@ const TrackCard = ({ track, favorites }) => {
   return (
     <div
       style={{
-        maxWidth: '90%',
+        maxWidth: '70%',
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         margin: 'auto auto 16px auto',
         borderRadius: 16,

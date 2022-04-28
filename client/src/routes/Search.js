@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@mui/material';
-import LikeButton from '../components/LikeButton';
 import TokenContext from '../contexts/token-context';
 import ImageCard from '../components/ImageCard';
 import GridContainer from '../components/GridContainer';
@@ -60,7 +59,6 @@ const SEARCH = gql`
 `;
 
 const Search = () => {
-  const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const { fetchToken, userFavorites } = useContext(TokenContext);
 
   const search = window.location.search;
@@ -80,7 +78,7 @@ const Search = () => {
   }, [error, userFavorites]);
 
   return (
-    <div>
+    <div style={{ width: '70%' }}>
       <Typography>Searched by '{query}'</Typography>
       {(searchType === 'album' || searchType === 'all') && (
         <>
