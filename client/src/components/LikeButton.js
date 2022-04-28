@@ -1,26 +1,33 @@
 import { gql, useMutation } from '@apollo/client';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { Button } from '@mui/material';
 
 const TOGGLE_FAVORITE = gql`
-  mutation Mutation($trackId: ID, $type: String, $userId: ID) {
-    addFavorite(id: $trackId, type: $type, userId: $userId) {
+  mutation Mutation($itemId: ID, $type: String, $userId: ID) {
+    addFavorite(id: $itemId, type: $type, userId: $userId) {
       tracks {
         id
         name
+      }
+      albums {
+        id
+      }
+      artists {
+        id
       }
     }
   }
 `;
 
-const saveFavorite = async (trackId, type, userId, mutation) => {
+const saveFavorite = async (itemId, type, userId, mutation) => {
+  console.log(itemId, type, userId);
   const {
     error,
     data: { addFavorite: items },
   } = await mutation({
     variables: {
-      trackId,
+      itemId,
       type,
       userId,
     },
@@ -37,6 +44,9 @@ const LikeButton = (props) => {
   const [liked, setLiked] = useState(isLiked);
   const [addFavorite] = useMutation(TOGGLE_FAVORITE);
 
+  useEffect(() => {
+    // setLiked(isLiked);
+  }, [isLiked]);
   // ♥ ♡
   return (
     <Button
