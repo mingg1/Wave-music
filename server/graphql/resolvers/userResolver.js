@@ -6,10 +6,25 @@ import Track from '../../models/Track';
 import { login } from '../../utils/auth';
 
 export default {
+  Comment: {
+    owner: async (parent) => {
+      return await User.findById(parent.owner).populate({
+        path: 'favorites',
+        populate: [{ path: 'owner', model: User }],
+      });
+    },
+  },
+  UserPlaylist: {
+    owner: async (parent) => {
+      return await User.findById(parent.owner).populate({
+        path: 'favorites',
+        populate: [{ path: 'owner', model: User }],
+      });
+    },
+  },
   Query: {
     user: async (parent, { id }) => {
       // find user by id
-      console.log(await Favorite.findOne({ owner: id }).populate('owner'));
       return await User.findById(id).populate({
         path: 'favorites',
         populate: [{ path: 'owner', model: User }],
@@ -24,6 +39,12 @@ export default {
       console.log(await Favorite.findOne({ owner: id }).populate('owner'));
       return await Favorite.findOne({ owner: id }).populate('owner');
     },
+    userByNickname: async (_, { nickname }) => {
+      return await User.findOne({ nickname }).populate({
+        path: 'favorites',
+        populate: [{ path: 'owner', model: User }],
+      });
+    },
     // userPlaylists: async (_, { id }) => {
     //   //return await User.
     // },
@@ -31,32 +52,35 @@ export default {
   Mutation: {
     addFavorite: async (_, { id, type, userId }, { req }) => {
       const userFavorites = await Favorite.findOne({ owner: userId });
-      console.log('wtf', userFavorites.tracks, id);
       switch (type) {
         case 'track':
-          if (userFavorites.tracks.includes(id)) {
-            console.log('his');
-            userFavorites.tracks = userFavorites.tracks.filter(
-              (trackId) => trackId !== id
-            );
+          let tracks = userFavorites.tracks;
+          if (tracks.includes(id)) {
+            userFavorites.tracks = tracks.filter((trackId) => trackId !== id);
           } else {
-            console.log('hers');
             userFavorites.tracks.push(id);
           }
-          // const track = await Track.create({ refId: id });
-          // console.log(track, ' : track');
-          // userFavorites.tracks.includes(id)
-          //   ? userFavorites.tracks.filter((trackId) => trackId !== id)
-          //   : userFavorites.tracks.push(id);
-          console.log(userFavorites.tracks);
-          await userFavorites.save();
-
           break;
-
+        case 'album':
+          let albums = userFavorites.albums;
+          if (albums.includes(id)) {
+            userFavorites.albums = albums.filter((albumId) => albumId !== id);
+          } else userFavorites.albums.push(id);
+          break;
+        case 'artist':
+          let artists = userFavorites.artists;
+          if (artists.includes(id)) {
+            userFavorites.artists = artists.filter(
+              (artistId) => artistId !== id
+            );
+          } else userFavorites.artists.push(id);
+          break;
         default:
           break;
       }
-      return await userFavorites.populate('tracks');
+      await userFavorites.save();
+
+      return await userFavorites;
     },
     registerUser: async (parent, args) => {
       try {

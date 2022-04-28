@@ -8,6 +8,23 @@ class SpotifyAPI extends RESTDataSource {
     this.baseURL = 'https://api.spotify.com/v1/';
   }
 
+  async search(token, query, type) {
+    const result = await this.get(
+      `search`,
+      {
+        q: query,
+        type,
+        limit: 20,
+        market: 'US',
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return result;
+  }
+
   async getAlbumTracks(token, id) {
     const result = await this.get(
       `albums/${id}/tracks`,
@@ -38,8 +55,8 @@ class SpotifyAPI extends RESTDataSource {
     return result.albums.items;
   }
 
-  getAlbums(token, albums) {
-    return this.get(
+  async getAlbums(token, albums) {
+    const result = await this.get(
       `albums`,
       {
         ids: albums,
@@ -49,6 +66,7 @@ class SpotifyAPI extends RESTDataSource {
         headers: { authorization: `Bearer ${token}` },
       }
     );
+    return result.albums;
   }
 
   async getPlayListItems(token, id) {
@@ -66,7 +84,9 @@ class SpotifyAPI extends RESTDataSource {
   async getFeaturedPlayList(token) {
     const result = await this.get(
       `browse/featured-playlists`,
-      {},
+      {
+        market: 'US',
+      },
       {
         headers: { authorization: `Bearer ${token}` },
       }
@@ -77,14 +97,27 @@ class SpotifyAPI extends RESTDataSource {
   }
 
   // sample id: 7oJoc76R3JMv7dZhxgi7zD
+
   async getArtist(token, id) {
     return this.get(
       `artists/${id}`,
       {},
+      { headers: { authorization: `Bearer ${token}` } }
+    );
+  }
+
+  async getArtists(token, artists) {
+    const result = await this.get(
+      `artists`,
+      {
+        ids: artists,
+      },
       {
         headers: { authorization: `Bearer ${token}` },
       }
     );
+
+    return result.artists;
   }
 
   async getSimilarArtists(token, id) {
@@ -122,27 +155,17 @@ class SpotifyAPI extends RESTDataSource {
         headers: { authorization: `Bearer ${token}` },
       }
     );
-    console.log(result.tracks);
+
     return result.tracks;
   }
 
-  async getRecommendations(token, trackId) {
-    const data = await this.getTracks(token, trackId);
-
-    // const seedArtists = data.artists
-    //   .filter((artist) => artist.name)
-    //   .toStriing();
-    // const seedGenres = data.artists
-    //   .filter((artist) => artist.genres)
-    //   .toStriing();
-    // console.log(seedArtists, seedGenres);
+  async getRecommendations(token, artistId, seedGenres, trackId) {
     const result = await this.get(
       `recommendations`,
       {
-        seed_artists: seedArtists,
-        seed_genres: seedGenres,
-        seed_tracks: trackId,
-        market: 'US',
+        seed_artists: artistId || '',
+        seed_genres: seedGenres || '',
+        seed_tracks: trackId || '',
       },
       {
         headers: { authorization: `Bearer ${token}` },
