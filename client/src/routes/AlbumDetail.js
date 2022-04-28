@@ -86,7 +86,7 @@ const AlbumDetail = () => {
     }
     if (album) {
       console.log(album);
-      fetchComments('album', album.id);
+      fetchComments('album', album?.id);
       //setIsliked(!!userFavorites?.albums?.map((f) => f.id)?.includes(id));
     }
   }, [error, userFavorites, loading, album, comments]);
@@ -123,7 +123,7 @@ const AlbumDetail = () => {
                       type="album"
                       userId={loggedInUser.id}
                       isLiked={
-                        !!userFavorites?.albums?.map((f) => f.id)?.includes(id)
+                        !!userFavorites?.albums?.map((f) => f?.id)?.includes(id)
                       }
                     />
                   )}
