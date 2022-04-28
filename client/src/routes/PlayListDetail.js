@@ -34,11 +34,8 @@ const GET_PL_TRACKS = gql`
 
 const PlayListDetail = () => {
   const location = useLocation();
-
   const { id } = useParams();
-  const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const { fetchToken, userFavorites } = useContext(TokenContext);
-
   const { loading, data, error } = useQuery(GET_PL_TRACKS, {
     variables: { playlistId: id },
   });
