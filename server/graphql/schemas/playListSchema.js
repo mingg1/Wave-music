@@ -4,6 +4,7 @@ export default gql`
   extend type Query {
     featuredPaylists: [SfPlaylist]
     userPlaylists(userId: ID!): [UserPlaylist]
+    userPlaylist(playlistId: ID!): UserPlaylist
   }
   extend type Mutation {
     addPlayLists(name: String!, userId: ID!): UserPlaylist
@@ -23,7 +24,8 @@ export default gql`
     id: ID
     name: String!
     owner: User
-    tracks: [String]
+    tracks: [Track]
     createdAt: String
+    userMade: Boolean
   }
 `;

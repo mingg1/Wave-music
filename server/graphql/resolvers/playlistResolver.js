@@ -21,6 +21,13 @@ export default {
         throw new Error(error);
       }
     },
+    userPlaylist: async (_, { playlistId }) => {
+      try {
+        return await Playlist.findById(playlistId);
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
   },
   Mutation: {
     addPlayLists: async (_, { name, userId }) => {

@@ -1,4 +1,11 @@
 export default {
+  UserPlaylist: {
+    tracks: async (parent, args, { dataSources, req }) => {
+      const { sf_token } = req.headers;
+      const ids = parent.tracks?.filter((t) => t).toString() || args.ids;
+      return await dataSources.spotifyAPI.getTracks(sf_token, ids);
+    },
+  },
   Favorite: {
     tracks: async (parent, args, { dataSources, req }) => {
       const { sf_token } = req.headers;

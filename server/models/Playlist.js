@@ -5,6 +5,7 @@ const playlistSchema = new mongoose.Schema({
   owner: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
   tracks: [{ type: String }],
   createdAt: { type: Date, required: true, default: Date.now },
+  userMade: { type: Boolean, default: true },
 });
 
 const Playlist = mongoose.model('Playlist', playlistSchema);
