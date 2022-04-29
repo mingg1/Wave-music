@@ -1,3 +1,4 @@
+import 'regenerator-runtime';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import typeDefs from './graphql/schemas/index';
@@ -9,6 +10,7 @@ import TokenAPI from './graphql/dataSources/tokenAPI';
 import cors from 'cors';
 
 (async () => {
+  const PORT = process.env.PORT || 4000;
   try {
     const server = new ApolloServer({
       typeDefs,
@@ -46,7 +48,10 @@ import cors from 'cors';
     await server.start();
     server.applyMiddleware({ app, cors: false });
 
-    app.listen(4000, () => {
+    app.use('/', (req, res) => {
+      res.send('Wave server 🐬');
+    });
+    app.listen(PORT, () => {
       console.log(
         'Running a GraphQL API server at http://localhost:4000/graphql'
       );

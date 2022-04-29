@@ -4,6 +4,8 @@
   "description": "gql server for the project",
   "main": "index.js",
   "scripts": {
+    "start": "node build/index.js",
+    "build:server": "babel ../server -d build/ --ignore node_modules ",
     "dev": "nodemon --delay 3 --exec babel-node index.js"
   },
   "author": "Minji Choi",
@@ -24,6 +26,7 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
