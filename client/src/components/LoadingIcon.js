@@ -7,7 +7,7 @@ const LoadingIcon = () => {
       <Bars
         heigth="100"
         width="100"
-        color="grey"
+        color="white"
         ariaLabel="loading-indicator"
       />
     </div>

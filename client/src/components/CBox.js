@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { gql, useMutation } from '@apollo/client';
-
+import { connect } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
-
-import { TextField, Box, Button } from '@mui/material';
+import { TextField, Box, Button, Typography } from '@mui/material';
+import { addComment } from '../store';
 
 const ADD_COMMENTS = gql`
   mutation Mutation(
@@ -22,6 +22,11 @@ const ADD_COMMENTS = gql`
     ) {
       id
       text
+      owner {
+        nickname
+        id
+      }
+      createdAt
     }
   }
 `;
@@ -37,7 +42,7 @@ const getVariables = (args) => {
 
 const CommentBox = (props) => {
   const [addComments] = useMutation(ADD_COMMENTS);
-
+  const commentBox = useRef();
   const {
     register,
     handleSubmit,
@@ -48,17 +53,24 @@ const CommentBox = (props) => {
   const addComment = async (data) => {
     const { comment: text } = data;
     const owner = JSON.parse(localStorage.getItem('user')).id;
-
     const { type, refId } = props.getTypeAndId();
-
     const variables = getVariables({ text, owner, type, refId });
-    await addComments({ variables });
+    try {
+      const addedComment = await addComments({ variables });
+      props.comment(addedComment.data.addComment);
+      commentBox.current.value = '';
+    } catch (err) {
+      console.error(err);
+    }
   };
   const onError = (error) => {
     console.log(error, errors);
   };
   return (
     <div style={{ height: '100%', paddingTop: 80 }}>
+      <Typography component="h3" variant="h4">
+        Comments
+      </Typography>
       <Box component="form" onSubmit={handleSubmit(addComment, onError)}>
         <Controller
           name="comment"
@@ -74,6 +86,7 @@ const CommentBox = (props) => {
               required
               fullWidth
               label="Leave comments"
+              inputRef={commentBox}
             />
           )}
         />
@@ -85,10 +98,17 @@ const CommentBox = (props) => {
           style={{ color: 'black', borderBlockColor: 'black' }}
           sx={{ mt: 3, mb: 2 }}
         >
-          Post comment
+          Leave comment
         </Button>
       </Box>
     </div>
   );
 };
-export default CommentBox;
+
+const mapDispatchToProps = (dispatch) => ({
+  comment: (comment) => {
+    dispatch(addComment(comment));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(CommentBox);
