@@ -78,7 +78,7 @@ const Search = () => {
   }, [error, userFavorites]);
 
   return (
-    <div style={{ width: '70%' }}>
+    <div>
       <Typography>Searched by '{query}'</Typography>
       {(searchType === 'album' || searchType === 'all') && (
         <>

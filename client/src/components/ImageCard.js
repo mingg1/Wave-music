@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import portraitPlaceholder from './images/portraitPlaceholder.png';
+import playlistPlaceholder from './images/playlistPlaceholder.png';
 
-const ImageCard = ({ element, type }) => {
+const ImageCard = ({ element, type, userMade }) => {
   return (
     <div
       key={element.id}
@@ -13,13 +13,14 @@ const ImageCard = ({ element, type }) => {
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         minWidth: '80%',
         maxWidth: '80%',
-        height: 240,
+        height: 260,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
       }}
     >
       <Link
+        state={userMade && { userMade }}
         id={element.id}
         to={`/${type}/${element.id}`}
         style={{
@@ -32,17 +33,21 @@ const ImageCard = ({ element, type }) => {
         <img
           alt={element.type}
           src={
-            (element?.images && element?.images[0]?.url) || portraitPlaceholder
+            (element?.images && element?.images[0]?.url) || playlistPlaceholder
           }
           style={{
             minWidth: '100%',
-            height: 180,
+            height: 200,
             borderRadius: 15,
             maxWidth: '100%',
           }}
         />
       </Link>
-      <Link id={element.id} to={`/${type}/${element.id}`}>
+      <Link
+        state={userMade && { userMade }}
+        id={element.id}
+        to={`/${type}/${element.id}`}
+      >
         <h5>{element.name}</h5>
       </Link>
     </div>

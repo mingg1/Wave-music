@@ -21,7 +21,6 @@ const TOGGLE_FAVORITE = gql`
 `;
 
 const saveFavorite = async (itemId, type, userId, mutation) => {
-  console.log(itemId, type, userId);
   const {
     error,
     data: { addFavorite: items },
@@ -41,11 +40,11 @@ const saveFavorite = async (itemId, type, userId, mutation) => {
 
 const LikeButton = (props) => {
   const { trackId, type, userId, isLiked } = props;
-  const [liked, setLiked] = useState(isLiked);
+  const [liked, setLiked] = useState(false);
   const [addFavorite] = useMutation(TOGGLE_FAVORITE);
 
   useEffect(() => {
-    // setLiked(isLiked);
+    setLiked(isLiked);
   }, [isLiked]);
   // ♥ ♡
   return (
@@ -54,7 +53,7 @@ const LikeButton = (props) => {
       style={{ fontSize: 25, padding: 0 }}
       onClick={() => {
         saveFavorite(trackId, type, userId, addFavorite);
-        setLiked(!liked);
+        setLiked(() => !isLiked);
       }}
     >
       {liked ? <FaHeart /> : <FaRegHeart />}

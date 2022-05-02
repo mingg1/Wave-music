@@ -29,10 +29,15 @@ const GET_USER_FAVORITES = gql`
 export const TokenContextProvider = (props) => {
   // const [isTokenValid, setIsTokenValid] = useState(false)
   const [userFavorites, setUserFavorites] = useState(undefined);
+  const [userPlaylists, setUserPlaylists] = useState([]);
   const [refetchFavorites, setRefetchFavorites] = useState(() => {});
   const [sfToken, setSfToken] = useState(
     localStorage.getItem('sf-token') || null
   );
+  const [loggedInUser, setLoggedInUser] = useState(
+    localStorage.getItem('user') || null
+  );
+
   const [getUserFavorites] = useLazyQuery(GET_USER_FAVORITES);
   const [getToken] = useLazyQuery(GET_SF_TOKEN);
 
@@ -48,7 +53,7 @@ export const TokenContextProvider = (props) => {
     const {
       data: { sf_token: token },
     } = await getToken();
-
+    console.log(token);
     const tokenTimeout = Date.now() + 3599900;
     const data = JSON.stringify({ sf_token: token, tokenTimeout });
     localStorage.setItem('sf-token', data);
@@ -61,10 +66,10 @@ export const TokenContextProvider = (props) => {
       refetch,
     } = await getUserFavorites({
       variables: {
-        userId: JSON.parse(localStorage.getItem('user'))?.id || userId,
+        userId: JSON.parse(loggedInUser)?.id || userId,
       },
     });
-    console.log(userFavorites);
+
     if (userFavorites !== null && userFavorites[0] !== null) {
       setRefetchFavorites(refetch);
       setUserFavorites(userFavorites);
@@ -77,6 +82,7 @@ export const TokenContextProvider = (props) => {
       fetchToken();
     }
     getFavorites();
+    // getPlaylists();
     // if (!loading || error) {
     //   fetchToken();
     // }
@@ -92,6 +98,8 @@ export const TokenContextProvider = (props) => {
         refetchFavorites,
         setUserFavorites,
         getFavorites,
+        userPlaylists,
+        setUserPlaylists,
       }}
     >
       {props.children}

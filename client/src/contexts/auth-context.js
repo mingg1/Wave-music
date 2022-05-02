@@ -10,15 +10,15 @@ export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem('user-token') || false
   );
-  const { getFavorites, userFavorites, setUserFavorites } =
+  const { getFavorites, userFavorites, setUserFavorites, setUserPlaylists } =
     useContext(TokenContext);
 
   const logoutHandler = () => {
     localStorage.removeItem('user-token');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
-    setUserFavorites([]);
-    console.log(userFavorites);
+    setUserFavorites(undefined);
+    setUserPlaylists(undefined);
   };
 
   const loginHandler = async (res) => {
@@ -26,7 +26,7 @@ export const AuthContextProvider = (props) => {
     localStorage.setItem('user-token', token);
     localStorage.setItem('user', JSON.stringify(user));
     setIsLoggedIn(true);
-    await getFavorites(user.id);
+    // await getFavorites(user.id);
   };
 
   return (
