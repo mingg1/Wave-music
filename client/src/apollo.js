@@ -1,27 +1,18 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloLink,
-  HttpLink,
-  from,
-} from '@apollo/client';
-
+import { ApolloClient, InMemoryCache, HttpLink, from } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
+
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    console.log('err: ', graphQLErrors);
+    console.error('GQL ERROR: ', graphQLErrors);
   }
-
   if (networkError) {
-    // handle network error
-    console.log(networkError);
+    console.error('NETWORK ERROR: ', networkError);
   }
 });
 
 const authLink = setContext(async (_, { headers }) => {
   const { sf_token } = JSON.parse(localStorage.getItem('sf-token')) || {};
-
   return {
     headers: {
       ...headers,

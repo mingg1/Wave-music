@@ -6,15 +6,19 @@ import { ApolloProvider } from '@apollo/client';
 import client from './apollo';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { TokenContextProvider } from './contexts/token-context';
+import { Provider } from 'react-redux';
+import store from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
       <ApolloProvider client={client}>
-        <TokenContextProvider>
-          <App />
-        </TokenContextProvider>
+        <Provider store={store}>
+          <TokenContextProvider>
+            <App />
+          </TokenContextProvider>
+        </Provider>
       </ApolloProvider>
     </Router>
   </React.StrictMode>
