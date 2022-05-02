@@ -13,6 +13,7 @@ export default gql`
       postId: ID
       refId: ID
     ): Comment
+    deleteComment(commentId: ID): Comment
   }
 
   type Comment {

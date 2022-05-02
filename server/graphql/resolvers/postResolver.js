@@ -11,6 +11,13 @@ export default {
         throw new Error(err);
       }
     },
+    post: async (_, { postId }) => {
+      try {
+        return await Post.findById(postId).populate('owner');
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
     userPosts: async (_, { userId }) => {
       try {
         return await Post.find({ owner: userId }).populate('owner');

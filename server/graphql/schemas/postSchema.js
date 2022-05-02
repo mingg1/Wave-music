@@ -3,12 +3,13 @@ import { gql } from 'apollo-server-express';
 export default gql`
   extend type Query {
     posts: [Post]
-    userPosts(userId: ID): [Post]
+    post(postId: ID!): Post
+    userPosts(userId: ID!): [Post]
   }
 
   extend type Mutation {
     addPost(owner: ID!, title: String!, description: String!): Post
-    deletePost(postId: ID): Post
+    deletePost(postId: ID!): Post
   }
 
   type Post {

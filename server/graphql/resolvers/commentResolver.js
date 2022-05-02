@@ -21,8 +21,14 @@ export default {
       try {
         const newComment = new Comment({ ...args });
         const result = await newComment.save();
-
         return result;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    deleteComment: async (_, { commentId }) => {
+      try {
+        return await Comment.findByIdAndDelete(commentId);
       } catch (err) {
         throw new Error(err);
       }
