@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import '../App.css';
 import TokenContext from '../contexts/token-context';
 import styled from 'styled-components';
-import AuthContext from '../contexts/auth-context';
 import { Button, Typography, TextField } from '@mui/material';
 import Carousel from 'react-elastic-carousel';
 import Select from 'react-select';
 import { useForm, Controller } from 'react-hook-form';
+import { connect } from 'react-redux';
+import { fetch } from '../store';
 
 const GET_PL = gql`
   {
@@ -43,11 +44,61 @@ const PlaylistItemContainer = styled.div`
   width: fit-content;
 `;
 
+const GET_USER_PLAYLISTS = gql`
+  query UserPlaylists($userId: ID!) {
+    userPlaylists(userId: $userId) {
+      id
+      name
+      userMade
+      tracks {
+        id
+      }
+    }
+  }
+`;
+
+export const getPlaylists = async (getUserPlaylists) => {
+  try {
+    const { data } = await getUserPlaylists({
+      variables: {
+        userId: JSON.parse(localStorage.getItem('user'))?.id,
+      },
+    });
+
+    return data?.userPlaylists;
+  } catch (e) {
+    console.log(e);
+  }
+
+  //  setUserPlaylists((prevState) => userPlaylists);
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  getPlaylists: async (getUserPlaylists) =>
+    dispatch(fetch(await getPlaylists(getUserPlaylists))),
+});
+
+const searchOptions = [
+  { value: 'album', label: 'Album' },
+  { value: 'artist', label: 'Artist' },
+  { value: 'track', label: 'Track' },
+  { value: 'user', label: 'User' },
+  { value: 'all', label: 'All' },
+];
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: 100,
+      width: 250,
+    },
+  },
+};
+
 const Home = () => {
   const navigate = useNavigate();
-  const { fetchToken } = useContext(TokenContext);
-  const { isLoggedIn } = useContext(AuthContext);
-  const { loading, error, data } = useQuery(GET_PL);
+  const { fetchToken, sfToken } = useContext(TokenContext);
+  const { loading, error, data, refetch } = useQuery(GET_PL);
   const {
     register,
     handleSubmit,
@@ -58,28 +109,22 @@ const Home = () => {
   const handleSearchOptionChange = (selectedOption) => {
     setSelectedSearchOption(selectedOption.value);
   };
+
   useEffect(() => {
     // validation
     //  fetchToken();
     if (!loading && error) {
       fetchToken();
-      // refetch();
+      refetch();
     }
+    //  getPlaylists(getUserPlaylists);
     // update or not
-  }, [error]);
-
-  const searchOptions = [
-    { value: 'album', label: 'Album' },
-    { value: 'artist', label: 'Artist' },
-    { value: 'track', label: 'Track' },
-    { value: 'user', label: 'User' },
-    { value: 'all', label: 'All' },
-  ];
+  }, [error, data]);
 
   return (
     <Container>
       <form
-        style={{ display: 'flex' }}
+        style={{ display: 'flex', alignItems: 'center' }}
         onSubmit={handleSubmit((data) => {
           console.log(selectedSearchOption);
           const { searchQuery } = data;
@@ -96,6 +141,7 @@ const Home = () => {
           options={searchOptions}
           onChange={handleSearchOptionChange}
           placeholder="Search By..."
+          MenuProps={MenuProps}
         />
         <Controller
           name="searchQuery"
@@ -111,7 +157,7 @@ const Home = () => {
           )}
         />
 
-        <Button type="submit" variant="outlined">
+        <Button type="submit" variant="contained" sx={{ height: 56, ml: 5 }}>
           Search
         </Button>
       </form>
@@ -158,4 +204,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default connect(null, mapDispatchToProps)(Home);
