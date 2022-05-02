@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Typography, CircularProgress } from '@mui/material';
-
 import { useLocation, useParams, Link } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import LikeButton from '../components/LikeButton';
 import CommentBox from '../components/CBox';
-import useComments from '../hooks/useComments';
+import placeholderImg from '../components/images/playlistPlaceholder.png';
+import { GET_COMMENTS } from '../queries/commentQuery';
 
 const GET_ARTIST = gql`
   query Artist($artistId: ID!) {
@@ -55,32 +55,7 @@ const GET_ARTIST = gql`
   }
 `;
 
-const GET_COMMENTS = gql`
-  query Query($type: String!, $pageId: ID!) {
-    comments(type: $type, pageId: $pageId) {
-      owner {
-        nickname
-      }
-      text
-      id
-      createdAt
-    }
-  }
-`;
-
-const TOGGLE_FAVORITE = gql`
-  mutation Mutation($trackId: ID, $type: String, $userId: ID) {
-    addFavorite(id: $trackId, type: $type, userId: $userId) {
-      tracks {
-        id
-        name
-      }
-    }
-  }
-`;
-
 const ArtistDetail = () => {
-  //const location = useLocation();
   const [artist, setArtist] = useState(undefined);
   const [comments, setComments] = useState(undefined);
   const { id } = useParams();
@@ -91,14 +66,13 @@ const ArtistDetail = () => {
     variables: { artistId: id },
   });
   const [getComments] = useLazyQuery(GET_COMMENTS);
-  //useComments(artist?.type || null, artist?.id || null, setComments);
+
   const fetchComments = async (type, pageId) => {
     const {
       data: { comments: commentData },
     } = await getComments({
       variables: { type, pageId },
     });
-
     setComments(commentData);
   };
 
@@ -131,7 +105,7 @@ const ArtistDetail = () => {
         <div>
           <div style={{ display: 'flex' }}>
             <img
-              src={artist.images && artist.images[0].url}
+              src={(artist?.images && artist?.images[0]?.url) || placeholderImg}
               style={{ width: '20vw' }}
             />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -154,7 +128,7 @@ const ArtistDetail = () => {
           </Typography>
           {data.artistTopTracks &&
             data.artistTopTracks.map((m) => (
-              <Link to={`/track/${m.id}`}>
+              <Link to={`/track/${m.id}`} key={m.id}>
                 <img src={m.album?.images[0].url} style={{ width: '40px' }} />
                 <span>{m.name}</span>
                 <span>{m.album.name}</span>

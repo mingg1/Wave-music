@@ -5,6 +5,13 @@ import LikeButton from '../components/LikeButton';
 import { useLocation, useParams, Link } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import CommentBox from '../components/CBox';
+import { connect } from 'react-redux';
+import { fetchComments } from '../store';
+import {
+  GET_COMMENTS,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '../queries/commentQuery';
 
 const GET_TRACK = gql`
   query Track($trackId: ID!) {
@@ -39,29 +46,13 @@ const GET_TRACK = gql`
   }
 `;
 
-const GET_COMMENTS = gql`
-  query Query($type: String!, $pageId: ID!) {
-    comments(type: $type, pageId: $pageId) {
-      owner {
-        nickname
-      }
-      text
-      id
-      createdAt
-    }
-  }
-`;
-
-const TrackDetail = () => {
-  const getTypeAndId = () => ({ type: track.type, refId: track.id });
-  const [comments, setComments] = useState(undefined);
-  //const location = useLocation();
+const TrackDetail = ({ getFetchedComments, state }) => {
+  const { comments } = state;
   const [track, setTrack] = useState([]);
+  const getTypeAndId = () => ({ type: track.type, refId: track.id });
   const { id } = useParams();
-
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const { fetchToken, userFavorites } = useContext(TokenContext);
-
   const { loading, data, error } = useQuery(GET_TRACK, {
     variables: { trackId: id },
   });
@@ -73,8 +64,7 @@ const TrackDetail = () => {
       } = await getComments({
         variables: { type, pageId },
       });
-
-      setComments(commentData);
+      getFetchedComments(commentData);
     }
   };
 
@@ -88,7 +78,7 @@ const TrackDetail = () => {
     if (track) {
       fetchComments(track.type, track.id);
     }
-  }, [error, userFavorites, track, loading, comments]);
+  }, [error, userFavorites, track, loading]);
 
   return (
     <>
@@ -127,9 +117,7 @@ const TrackDetail = () => {
           <Typography component="h3" variant="h4">
             Recommendations
           </Typography>
-          <Typography component="h3" variant="h4">
-            Comments
-          </Typography>
+
           {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
           {Array.isArray(comments) &&
             comments?.map((comment) => (
@@ -147,4 +135,4 @@ const TrackDetail = () => {
   );
 };
 
-export default TrackDetail;
+export default connect(mapStateToProps, mapDispatchToProps)(TrackDetail);

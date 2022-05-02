@@ -27,7 +27,7 @@ const REGISTER = gql`
   }
 `;
 
-const Login = () => {
+const Signup = () => {
   const { isLoggedIn, onLogin } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [userRegister] = useMutation(REGISTER);
@@ -49,7 +49,6 @@ const Login = () => {
 
   const handleSignup = async (data) => {
     const { nickname, email, password } = data;
-    console.log(data);
     setLoading(true);
 
     try {
@@ -63,7 +62,7 @@ const Login = () => {
           password,
         },
       });
-      console.log(user);
+
       if (user) {
         setLoading(false);
         navigate('/login');
@@ -186,4 +185,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

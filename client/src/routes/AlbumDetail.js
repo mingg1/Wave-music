@@ -2,9 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Typography, CircularProgress } from '@mui/material';
 import LikeButton from '../components/LikeButton';
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import CommentBox from '../components/CBox';
+import TrackCard from '../components/TrackCard';
+import { GET_COMMENTS } from '../queries/commentQuery';
 
 const GET_ALBUM = gql`
   query Album($albumIds: ID!) {
@@ -29,22 +31,14 @@ const GET_ALBUM = gql`
             name
             id
           }
+          album {
+            images {
+              url
+            }
+          }
         }
       }
       release_date
-    }
-  }
-`;
-
-const GET_COMMENTS = gql`
-  query Comments($type: String!, $pageId: ID!) {
-    comments(type: $type, pageId: $pageId) {
-      id
-      text
-      owner {
-        nickname
-      }
-      createdAt
     }
   }
 `;
@@ -54,7 +48,6 @@ const AlbumDetail = () => {
 
   const [album, setAlbum] = useState([]);
   const { id } = useParams();
-  console.log(id);
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const { fetchToken, userFavorites } = useContext(TokenContext);
 
@@ -97,12 +90,19 @@ const AlbumDetail = () => {
       {data && album && (
         <>
           <div>
-            <div style={{ display: 'flex' }}>
+            <div
+              style={{ display: 'flex', width: '55vw', margin: '48px auto' }}
+            >
               <img
                 src={album?.images && album.images[0].url}
                 style={{ width: '20vw', maxWidth: 280 }}
               />
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 <div style={{ marginLeft: 30 }}>
                   <Typography component="h1" variant="h3">
                     {album.name}
@@ -131,21 +131,13 @@ const AlbumDetail = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div style={{ width: '70vw' }}>
             {album.tracks?.items?.map((track) => (
-              <div>
-                <Typography component="h5" variant="h5">
-                  {track?.name}
-                </Typography>
-                <Typography component="h6" variant="h6">
-                  {track.artists?.map((a) => (
-                    <Link to={`/artist/${a.id}`}>{a.name + ' '}</Link>
-                  ))}
-                </Typography>
-                <Typography component="h6" variant="h6">
-                  {track.duration_ms}
-                </Typography>
-              </div>
+              <TrackCard
+                key={track.id}
+                track={track}
+                favorites={userFavorites}
+              />
             ))}
           </div>
           <Typography component="h1" variant="h4">

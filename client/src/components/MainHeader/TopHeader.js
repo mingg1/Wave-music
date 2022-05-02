@@ -4,6 +4,7 @@ import AuthContext from '../../contexts/auth-context';
 
 const TopHeader = (props) => {
   const { isLoggedIn, onLogout } = useContext(AuthContext);
+  const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
   const topBarStyle = {
     height: '75px',
@@ -26,7 +27,7 @@ const TopHeader = (props) => {
   };
   return (
     <div style={topBarStyle}>
-      <NavLink to="/artists">Artists</NavLink>
+      <NavLink to="/post">Post</NavLink>
       <NavLink to="/albums">Albums</NavLink>
       <NavLink to="/songs">Songs</NavLink>
       <NavLink to="/playlists">Playlists</NavLink>
@@ -40,10 +41,11 @@ const TopHeader = (props) => {
       >
         {isLoggedIn ? (
           <>
-            <h1 style={{ ...linkStyles, color: '#bfbfbf' }}>
-              Welcome,{' '}
-              <span>{JSON.parse(localStorage.getItem('user')).nickname}</span>
-            </h1>
+            <NavLink to={`/user/${loggedInUser.id}`}>
+              <h1 style={{ ...linkStyles, color: '#bfbfbf' }}>
+                Welcome, <span>{loggedInUser.nickname}</span>
+              </h1>
+            </NavLink>
             <NavLink style={{ ...linkStyles }} to="/" onClick={onLogout}>
               Log out
             </NavLink>
