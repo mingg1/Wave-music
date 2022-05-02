@@ -45,9 +45,6 @@ export default {
         populate: [{ path: 'owner', model: User }],
       });
     },
-    // userPlaylists: async (_, { id }) => {
-    //   //return await User.
-    // },
   },
   Mutation: {
     addFavorite: async (_, { id, type, userId }, { req }) => {

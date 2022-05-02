@@ -12,9 +12,7 @@ const userSchema = new mongoose.Schema({
   nickname: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   favorites: { type: mongoose.Types.ObjectId, ref: 'Favorite' },
-  // playlists,
-  // posts,
-  // comments,
+  posts: { type: mongoose.Types.ObjectId, ref: 'Post' },
 });
 
 userSchema.pre('save', async function () {

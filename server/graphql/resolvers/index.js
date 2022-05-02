@@ -6,6 +6,7 @@ import albumResolver from './albumResolver';
 import trackResolver from './trackResolver';
 import searchResolver from './searchResolver';
 import commentResolver from './commentResolver';
+import postResolver from './postResolver';
 
 export default [
   userResolver,
@@ -16,4 +17,5 @@ export default [
   trackResolver,
   searchResolver,
   commentResolver,
+  postResolver,
 ];

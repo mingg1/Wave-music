@@ -7,6 +7,7 @@ import tokenSchema from './tokenSchema';
 import playListSchema from './playListSchema';
 import searchSchema from './searchSchema';
 import commentSchema from './commentSchema';
+import postSchema from './postSchema';
 
 const linkSchema = gql`
   type Query {
@@ -33,4 +34,5 @@ export default [
   playListSchema,
   searchSchema,
   commentSchema,
+  postSchema,
 ];
