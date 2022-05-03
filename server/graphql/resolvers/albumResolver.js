@@ -2,10 +2,8 @@ export default {
   Favorite: {
     albums: async (parent, args, { dataSources, req }) => {
       const { sf_token } = req.headers;
-
       const ids =
         parent.albums?.filter((album) => album).toString() || args.ids;
-
       return await dataSources.spotifyAPI.getAlbums(sf_token, ids);
     },
   },

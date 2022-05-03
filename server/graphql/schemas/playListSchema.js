@@ -9,6 +9,7 @@ export default gql`
   extend type Mutation {
     addPlayLists(name: String!, userId: ID!): UserPlaylist
     addTrackToPlaylist(playlistId: ID!, trackId: ID!): UserPlaylist
+    deleteTrackFromPlaylist(playlistId: ID!, trackId: ID!): UserPlaylist
   }
 
   type SfPlaylist {

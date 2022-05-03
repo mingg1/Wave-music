@@ -10,6 +10,7 @@ const postSlice = createSlice({
       return action.payload;
     },
     add: (state, action) => {
+      console.log(action.payload);
       state.push(action.payload);
     },
     remove: (state, action) =>
@@ -76,11 +77,35 @@ const userPlaylistSlice = createSlice({
     addTracks: (state, action) => {
       const { id, tracks } = action.payload;
       const index = state.findIndex((pl) => pl.id === id);
-      const newList = [...state];
-      newList[index].tracks = tracks;
+      const newPlaylist = [...state];
+      newPlaylist[index].tracks = tracks;
+    },
+    deleteTracks: (state, action) => {
+      console.log(action.payload);
+      const { playlistId, trackId } = action.payload;
+      const index = state.findIndex((pl) => pl.id === playlistId);
+      const newPlaylist = [...state];
+      newPlaylist[index].tracks = newPlaylist[index].tracks.filter(
+        (track) => track.id !== trackId
+      );
     },
   },
 });
+
+const currentPlSlice = createSlice({
+  name: 'currentPlaylist',
+  initialState: [],
+  reducers: {
+    fetchCurrentPl: (state, action) => {
+      console.log(action.payload);
+      return action.payload;
+    },
+    removeTrackFromPl: (state, action) =>
+      state.tracks.filter((track) => track.id !== action.payload),
+  },
+});
+
+export const { fetchCurrentPl, removeTrackFromPl } = currentPlSlice.actions;
 
 export const {
   add: addPost,
@@ -92,7 +117,8 @@ export const {
   remove: removeComment,
   fetch: fetchComments,
 } = commentSlice.actions;
-export const { fetch, add, addTracks } = userPlaylistSlice.actions;
+export const { fetch, add, addTracks, deleteTracks } =
+  userPlaylistSlice.actions;
 export const {
   setPlayerSongs,
   addSong,
@@ -107,6 +133,7 @@ export default configureStore({
     posts: postSlice.reducer,
     comments: commentSlice.reducer,
     userPlaylist: userPlaylistSlice.reducer,
+    currentPlaylist: currentPlSlice.reducer,
     player: playerSlice.reducer,
   },
   middleware,

@@ -43,6 +43,7 @@ const GET_USER_PL_TRACKS = gql`
       name
       id
       owner {
+        id
         nickname
       }
       tracks {
@@ -68,11 +69,6 @@ const GET_USER_PL_TRACKS = gql`
   }
 `;
 
-const mapDispatchToProps = (dispatch) => ({
-  getPlaylists: async (getUserPlaylists) =>
-    dispatch(fetch(await getPlaylistsQuery(getUserPlaylists))),
-});
-
 const PlayListDetail = ({ getPlaylists }) => {
   const location = useLocation();
   const { id } = useParams();
@@ -97,7 +93,11 @@ const PlayListDetail = ({ getPlaylists }) => {
       {data && (
         <>
           <PlaylistHeader
-            playlist={data?.playlistTracks}
+            playlist={
+              location?.state?.userMade
+                ? data?.userPlaylist?.tracks
+                : data?.playlistTracks
+            }
             element={
               location?.state?.userMade
                 ? {
@@ -126,6 +126,7 @@ const PlayListDetail = ({ getPlaylists }) => {
                       key={track?.id}
                       track={track}
                       favorites={userFavorites}
+                      owner={data?.userPlaylist?.owner?.id}
                     />
                   );
                 })
@@ -136,5 +137,10 @@ const PlayListDetail = ({ getPlaylists }) => {
     </>
   );
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  getPlaylists: async (getUserPlaylists) =>
+    dispatch(fetch(await getPlaylistsQuery(getUserPlaylists))),
+});
 
 export default connect(null, mapDispatchToProps)(PlayListDetail);

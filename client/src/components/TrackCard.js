@@ -5,6 +5,7 @@ import LikeButton from './LikeButton';
 import AddTrackButton from './AddTrackButton';
 import PlayButton from './PlayButton';
 import placeholder from './images/playlistPlaceholder.png';
+import DeleteButton from './DeleteTrackButton';
 
 const calculateTrackDuration = (millisec) => {
   const minutes = Math.floor(millisec / 60000);
@@ -14,7 +15,7 @@ const calculateTrackDuration = (millisec) => {
     : `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
-const TrackCard = ({ track, favorites }) => {
+const TrackCard = ({ track, favorites, owner }) => {
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const [isPlayBtnShown, setIsPlayBtnShown] = useState(false);
   return (
@@ -29,8 +30,7 @@ const TrackCard = ({ track, favorites }) => {
         justifyContent: 'space-between',
       }}
     >
-      <img
-        src={track?.album?.images[0]?.url || placeholder}
+      <div
         style={{ width: 90, height: 90 }}
         onMouseEnter={() => {
           if (track?.preview_url) {
@@ -42,7 +42,12 @@ const TrackCard = ({ track, favorites }) => {
             setIsPlayBtnShown(false);
           }, 1000)
         }
-      />
+      >
+        <img
+          style={{ width: '100%' }}
+          src={track?.album?.images[0]?.url || placeholder}
+        />
+      </div>
 
       {isPlayBtnShown && <PlayButton track={track} />}
 
@@ -91,6 +96,7 @@ const TrackCard = ({ track, favorites }) => {
             trackId={track?.id}
             userId={loggedInUser.id}
           />
+          {owner === loggedInUser.id && <DeleteButton trackId={track?.id} />}
         </div>
       )}
     </div>

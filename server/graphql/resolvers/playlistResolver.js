@@ -49,5 +49,17 @@ export default {
         throw new Error(err);
       }
     },
+    deleteTrackFromPlaylist: async (_, { playlistId, trackId }) => {
+      try {
+        const playlist = await Playlist.findById(playlistId);
+
+        playlist.tracks = playlist.tracks.filter((track) => track !== trackId);
+        const result = await playlist.save();
+        console.log(playlist.tracks);
+        return result;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
 };
