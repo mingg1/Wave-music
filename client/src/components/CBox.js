@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Box, Button, Typography } from '@mui/material';
 import { addComment } from '../store';
+import { mapDispatchToProps } from '../queries/commentQuery';
 
 const ADD_COMMENTS = gql`
   mutation Mutation(
@@ -42,6 +43,7 @@ const getVariables = (args) => {
 
 const CommentBox = (props) => {
   const [addComments] = useMutation(ADD_COMMENTS);
+  const { type, refId } = props.getTypeAndId();
   const commentBox = useRef();
   const {
     register,
@@ -53,7 +55,7 @@ const CommentBox = (props) => {
   const addComment = async (data) => {
     const { comment: text } = data;
     const owner = JSON.parse(localStorage.getItem('user')).id;
-    const { type, refId } = props.getTypeAndId();
+
     const variables = getVariables({ text, owner, type, refId });
     try {
       const addedComment = await addComments({ variables });
@@ -70,6 +72,9 @@ const CommentBox = (props) => {
     <div style={{ height: '100%', paddingTop: 80 }}>
       <Typography component="h3" variant="h4">
         Comments
+      </Typography>
+      <Typography component="h5" variant="h5">
+        🎼 How do you feel about this {type}?
       </Typography>
       <Box component="form" onSubmit={handleSubmit(addComment, onError)}>
         <Controller
@@ -104,11 +109,5 @@ const CommentBox = (props) => {
     </div>
   );
 };
-
-const mapDispatchToProps = (dispatch) => ({
-  comment: (comment) => {
-    dispatch(addComment(comment));
-  },
-});
 
 export default connect(null, mapDispatchToProps)(CommentBox);

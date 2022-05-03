@@ -7,7 +7,22 @@ export const GET_USER_PLAYLISTS = gql`
       name
       userMade
       tracks {
+        name
+        preview_url
+        duration_ms
         id
+        album {
+          name
+          id
+          images {
+            url
+          }
+        }
+        artists {
+          id
+          name
+        }
+        type
       }
     }
   }

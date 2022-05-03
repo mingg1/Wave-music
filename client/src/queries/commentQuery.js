@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { fetchComments } from '../store';
+import { addComment, fetchComments, removeComment } from '../store';
 
 export const GET_COMMENTS = gql`
   query Query($type: String!, $pageId: ID!) {
@@ -19,5 +19,11 @@ export const mapStateToProps = (state) => ({ state });
 export const mapDispatchToProps = (dispatch) => ({
   getFetchedComments: (data) => {
     dispatch(fetchComments(data));
+  },
+  comment: (comment) => {
+    dispatch(addComment(comment));
+  },
+  deleteComment: (commentId) => {
+    dispatch(removeComment(commentId));
   },
 });
