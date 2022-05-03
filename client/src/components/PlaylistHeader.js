@@ -13,10 +13,16 @@ const PlaylistHeader = ({
   togglePlaying,
 }) => {
   const { player } = state;
-  const playableList = playlist.reduce(
-    (acc, t) => (t?.track?.preview_url ? [...acc, t.track] : acc),
-    []
-  );
+  const playableList =
+    Array.isArray(playlist) && playlist[0]?.track
+      ? playlist?.reduce(
+          (acc, t) => (t?.track?.preview_url ? [...acc, t.track] : acc),
+          []
+        )
+      : playlist?.reduce(
+          (acc, t) => (t?.preview_url ? [...acc, t] : acc),
+          []
+        ) || [];
 
   return (
     <div style={{ display: 'flex', width: '80%' }}>
@@ -35,7 +41,6 @@ const PlaylistHeader = ({
           size={40}
           onClick={() => {
             songsSet(playableList);
-
             togglePlaying(player.playing);
           }}
         />
