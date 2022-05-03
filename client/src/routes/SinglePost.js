@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { gql, useQuery } from '@apollo/client';
 import { Typography, Button, Divider } from '@mui/material';
-import TokenContext from '../contexts/token-context';
-import ImageCard from '../components/ImageCard';
-import GridContainer from '../components/GridContainer';
-import TrackCard from '../components/TrackCard';
 import { connect } from 'react-redux';
 import CommentBox from '../components/CBox';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import LoadingIcon from '../components/LoadingIcon';
 import { mapDispatchToProps, mapStateToProps } from '../queries/commentQuery';
+import Comment from '../components/Comment';
 
 const POST = gql`
   query Query($postId: ID!, $type: String!) {
@@ -60,6 +57,7 @@ const SinglePost = ({ state, getFetchedComments }) => {
             display: 'flex',
             flexDirection: 'column',
             width: '70%',
+            padding: 24,
             backgroundColor: 'rgba(255, 255, 255, 0.4)',
           }}
         >
@@ -97,18 +95,17 @@ const SinglePost = ({ state, getFetchedComments }) => {
           )}
           <Divider />
           <Typography>{data.post.description}</Typography>
-
           {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
           {Array.isArray(comments) &&
-            comments?.map((comment) => (
-              <div>
-                <span>
-                  {comment.owner.nickname}
-                  {': '}
-                </span>
-                <span>{comment.text}</span>
-              </div>
-            ))}
+            comments?.map((comment) => {
+              return (
+                <Comment
+                  commentData={comment}
+                  key={comment.key}
+                  loggedInUser={loggedInUser?.id}
+                />
+              );
+            })}
         </div>
       )}
     </>
