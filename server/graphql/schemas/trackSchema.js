@@ -9,6 +9,7 @@ export default gql`
       seedGenres: String
       seedTracks: ID
     ): [Track]
+    genres: [String]
   }
 
   type TrackInfo {

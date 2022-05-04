@@ -41,6 +41,10 @@ export default {
     },
   },
   Query: {
+    genres: async (_, __, { dataSources, req }) => {
+      const { sf_token } = req.headers;
+      return await dataSources.spotifyAPI.getSeedGenres(sf_token);
+    },
     tracks: async (parent, { ids }, { dataSources, req }) => {
       const { sf_token } = req.headers;
       // const ids = parent.tracks?.toString() || args.ids;

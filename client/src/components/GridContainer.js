@@ -5,7 +5,7 @@ const GridContainer = (props) => {
     <div
       style={{
         maxWidth: '80%',
-        display: 'grid',
+        display: props.visible ? 'grid' : 'none',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gridGap: 24,
         margin: 'auto',

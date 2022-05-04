@@ -28,7 +28,7 @@ const TopHeader = (props) => {
   return (
     <div style={topBarStyle}>
       <NavLink to="/post">Post</NavLink>
-      <NavLink to="/albums">Albums</NavLink>
+      <NavLink to="/curation">Curation</NavLink>
       <NavLink to="/songs">Songs</NavLink>
       <NavLink to="/playlists">Playlists</NavLink>
       <div

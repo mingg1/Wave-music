@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Typography, CircularProgress } from '@mui/material';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { Typography } from '@mui/material';
 import LikeButton from '../components/LikeButton';
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import CommentBox from '../components/CBox';
+import Comment from '../components/Comment';
+import TrackCard from '../components/TrackCard';
 import { connect } from 'react-redux';
-import { fetchComments } from '../store';
 import {
   GET_COMMENTS,
   mapDispatchToProps,
@@ -41,7 +42,26 @@ const GET_TRACK = gql`
 
     recommendations(seedTracks: $trackId) {
       id
+      duration_ms
       name
+      preview_url
+      album {
+        id
+        images {
+          url
+        }
+        name
+        artists {
+          id
+          name
+        }
+      }
+      artists {
+        name
+        id
+        genres
+      }
+      type
     }
   }
 `;
@@ -117,17 +137,14 @@ const TrackDetail = ({ getFetchedComments, state }) => {
           <Typography component="h3" variant="h4">
             Recommendations
           </Typography>
+          {data.recommendations?.map((track) => (
+            <TrackCard key={track.id} track={track} favorites={userFavorites} />
+          ))}
 
           {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
           {Array.isArray(comments) &&
             comments?.map((comment) => (
-              <div>
-                <span>
-                  {comment.owner.nickname}
-                  {': '}
-                </span>
-                <span>{comment.text}</span>
-              </div>
+              <Comment commentData={comment} key={comment.id} />
             ))}
         </>
       )}

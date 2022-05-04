@@ -1,6 +1,6 @@
-import { gql, useMutation, useLazyQuery } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { connect } from 'react-redux';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 import {
   Button,
@@ -134,15 +134,15 @@ const AddTrackButton = ({ trackId, userId, state, addPlayist, addTrack }) => {
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return { state };
-}
+};
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     addPlayist: (playlist) => dispatch(add(playlist)),
     addTrack: (newPl) => dispatch(addTracks(newPl)),
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddTrackButton);

@@ -60,7 +60,6 @@ const SEARCH = gql`
 
 const Search = () => {
   const { fetchToken, userFavorites } = useContext(TokenContext);
-
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const query = params.get('query');
@@ -74,7 +73,6 @@ const Search = () => {
     if (!loading && error) {
       fetchToken();
     }
-    console.log(data);
   }, [error, userFavorites]);
 
   return (

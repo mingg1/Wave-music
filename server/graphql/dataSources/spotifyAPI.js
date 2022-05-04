@@ -159,6 +159,18 @@ class SpotifyAPI extends RESTDataSource {
     return result.tracks;
   }
 
+  async getSeedGenres(token) {
+    const result = await this.get(
+      `recommendations/available-genre-seeds`,
+      {},
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return result.genres;
+  }
+
   async getRecommendations(token, artistId, seedGenres, trackId) {
     const result = await this.get(
       `recommendations`,

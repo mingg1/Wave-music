@@ -17,6 +17,8 @@ import Player from './Player';
 import Post from '../routes/Post';
 import WritePost from '../routes/WritePost';
 import SinglePost from '../routes/SinglePost';
+import Curation from '../routes/Curation';
+import CurationResult from '../routes/CurationResult';
 
 const Container = styled.div`
   display: flex;
@@ -52,6 +54,12 @@ const App = () => {
             <Route exact path="/playlist" element={<PlayListDetail />} />
             <Route exact path="/playlist/:id" element={<PlayListDetail />} />
             <Route exact path="/user/:id" element={<User />} />
+            <Route exact path="/curation" element={<Curation />} />
+            <Route
+              exact
+              path="/curation/results"
+              element={<CurationResult />}
+            />
           </Routes>
         </Container>
         <Player />

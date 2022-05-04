@@ -1,5 +1,7 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
 
+// get access token to get the data from Spotify API
+
 class TokenAPI extends RESTDataSource {
   constructor() {
     super();
