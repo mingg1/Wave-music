@@ -10,6 +10,7 @@ export default gql`
   extend type Mutation {
     addPost(owner: ID!, title: String!, description: String!): Post
     deletePost(postId: ID!): Post
+    editPost(postId: ID!, title: String, description: String): Post
   }
 
   type Post {

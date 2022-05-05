@@ -43,5 +43,20 @@ export default {
         throw new Error(err);
       }
     },
+    editPost: async (_, { postId, title, description }) => {
+      try {
+        return await Post.findByIdAndUpdate(
+          postId,
+          {
+            title,
+            description,
+            createdAt: Date.now(),
+          },
+          { new: true }
+        );
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
 };

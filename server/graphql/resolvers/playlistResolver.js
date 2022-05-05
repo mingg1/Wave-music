@@ -39,6 +39,13 @@ export default {
         throw new Error(err);
       }
     },
+    deletePlaylist: async (_, { playlistId }) => {
+      try {
+        return await Playlist.findByIdAndDelete(playlistId);
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
     addTrackToPlaylist: async (_, { playlistId, trackId }) => {
       try {
         const playlist = await Playlist.findById(playlistId);
