@@ -2,9 +2,25 @@ export default {
   Favorite: {
     artists: async (parent, args, { dataSources, req }) => {
       const { sf_token } = req.headers;
-      const ids = parent.artists?.filter((t) => t).toString() || args.ids;
-      console.log(ids);
-      return await dataSources.spotifyAPI.getArtists(sf_token, ids);
+      // const ids = parent.artists?.filter((t) => t).toString() || args.ids;
+
+      const artistsList = parent.artists;
+      if (artistsList.length > 20) {
+        const artists = new Array();
+        const arrayAmount = Math.ceil(artistsList.length / 20);
+        for (let i = 0; i < arrayAmount; i++) {
+          const splitedArtists = artistsList.splice(-20).toString();
+          artists.push(
+            await dataSources.spotifyAPI.getArtists(sf_token, splitedArtists)
+          );
+        }
+        return artists.flat();
+      } else {
+        const ids = parent.artists?.filter((t) => t).toString() || args.ids;
+        return await dataSources.spotifyAPI.getArtists(sf_token, ids);
+      }
+
+      //return await dataSources.spotifyAPI.getArtists(sf_token, ids);
     },
   },
   Query: {

@@ -1,4 +1,7 @@
 export default {
+  /* Since API is able to take only 20 parameter ids at once, 
+   if there are more than 20 tracks in favorite or playlist, 
+   the list will be splitted and query will be sent as many times as generated arrays */
   UserPlaylist: {
     tracks: async (parent, args, { dataSources, req }) => {
       const { sf_token } = req.headers;
