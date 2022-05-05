@@ -72,7 +72,7 @@ const GET_USER_PL_TRACKS = gql`
 const PlayListDetail = ({ getPlaylists }) => {
   const location = useLocation();
   const { id } = useParams();
-  const isUserMade = location.state.userMade;
+  const isUserMade = location.state?.userMade;
   const query = isUserMade ? GET_USER_PL_TRACKS : GET_SF_PL_TRACKS;
   const { fetchToken, userFavorites } = useContext(TokenContext);
   const { loading, data, error } = useQuery(query, {
@@ -85,13 +85,13 @@ const PlayListDetail = ({ getPlaylists }) => {
       fetchToken();
     }
     getPlaylists(getUserPlaylists);
-  }, [error, userFavorites]);
+  }, [error, loading, userFavorites]);
 
   return (
     <>
       {(loading || error) && <LoadingIcon />}
       {data && (
-        <>
+        <div style={{ paddingTop: '2rem' }}>
           <PlaylistHeader
             playlist={
               location?.state?.userMade
@@ -132,7 +132,7 @@ const PlayListDetail = ({ getPlaylists }) => {
                 })
               : 'not yet tracks'}
           </div>
-        </>
+        </div>
       )}
     </>
   );

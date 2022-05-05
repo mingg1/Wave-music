@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { FaPlay } from 'react-icons/fa';
+import { Slider } from '@mui/material';
 import {
   IoPauseOutline,
   IoShuffle,
@@ -9,13 +10,13 @@ import {
   IoVolumeMedium,
 } from 'react-icons/io5';
 import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
-import { Typography } from '@mui/material';
 import {
   setCurrentSong,
   togglePlaying,
   toggleRandom,
   toggleRepeat,
 } from '../store';
+import { Link } from 'react-router-dom';
 
 const PlayerContainer = styled.div`
   box-shadow: 30px 0 0 0 rgba(21, 27, 38, 0.15);
@@ -37,8 +38,8 @@ const Player = ({
   setCurrent,
 }) => {
   const { player } = state;
-  let audio = useRef('audio_tag');
-  const [volume, setVolume] = useState(0.3);
+  const audio = useRef('audio_tag');
+  const [volume, setVolume] = useState(0.1);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -48,9 +49,9 @@ const Player = ({
   };
 
   const handleProgress = (e) => {
-    let compute = (e.target.value * duration) / 100;
-    setCurrentTime(compute);
-    audio.current.currentTime = compute;
+    const currentProgress = (e.target.value * duration) / 100;
+    setCurrentTime(currentProgress);
+    audio.current.currentTime = currentProgress;
   };
 
   const prevSong = () => {
@@ -77,19 +78,19 @@ const Player = ({
     }
   };
 
-  // End of Song
+  // End of the song
   const handleEnd = () => {
     // Check for random and repeat options
     if (player.random) {
       setCurrent(~~(Math.random() * player.songs.length));
     } else {
       if (player.repeat) {
-        nextSong();
-      } else if (player.currentSong === player.songs.length - 1) {
-        return;
-      } else {
-        nextSong();
-      }
+        if (player.songs.length === 1) {
+          toggleAudio();
+        } else {
+          nextSong();
+        }
+      } else togglePlaying(player.playing);
     }
   };
 
@@ -131,76 +132,157 @@ const Player = ({
             padding: '0 15px',
           }}
           src={
-            player.songs &&
-            player.songs[player.currentSong]?.album?.images[0]?.url
+            (player.songs &&
+              player.songs[player.currentSong]?.album?.images[0]?.url) ||
+            'http://www.scottishculture.org/themes/scottishculture/images/music_placeholder.png'
           }
         />
-        <div style={{ flex: 1 }}>
-          <Typography>
+        <div
+          style={{
+            flex: 1,
+            height: 60,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: ' space-evenly',
+          }}
+        >
+          <Link
+            id={player?.songs[player.currentSong]?.id}
+            to={`/track/${player?.songs[player.currentSong]?.id}`}
+            style={{
+              marginBottom: 8,
+              fontWeight: 600,
+              color: 'white',
+              fontSize: '1.2rem',
+              textDecoration: 'none',
+            }}
+          >
             {player.songs && player.songs[player.currentSong]?.name}
-          </Typography>
+          </Link>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {player.songs &&
               player.songs[player.currentSong]?.artists?.map((artist) => (
-                <Typography style={{ marginRight: 12 }}>
+                <Link
+                  key={artist?.id}
+                  id={artist?.id}
+                  to={`/artist/${artist?.id}`}
+                  style={{
+                    marginRight: 12,
+                    color: 'gray',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                  }}
+                >
                   {artist?.name}
-                </Typography>
+                </Link>
               ))}
           </div>
         </div>
-        <div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flex: 1,
+            flexDirection: 'column',
+            position: 'absolute',
+            left: '50%',
+            justifySelf: 'center',
+            marginLeft: -50,
+            height: 60,
+          }}
+        >
           <div
             style={{
               display: 'flex',
+              justifyContent: 'center',
               alignItems: 'center',
-              flex: 1,
-              alignSelf: 'center',
-              justifySelf: 'center',
-              position: 'absolute',
-              left: '50%',
+              gap: 70,
+              marginBottom: 10,
             }}
           >
-            <MdSkipPrevious onClick={prevSong} />
+            <MdSkipPrevious
+              onClick={prevSong}
+              size={30}
+              color="white"
+              cursor="pointer"
+            />
             <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
               onClick={() => {
                 togglePlaying(player.playing);
                 toggleAudio();
               }}
             >
-              {player.playing ? <IoPauseOutline /> : <FaPlay />}
+              {player.playing ? (
+                <IoPauseOutline size={30} cursor="pointer" color="white" />
+              ) : (
+                <FaPlay size={30} color="#a350d3" cursor="pointer" />
+              )}
             </div>
-            <MdSkipNext onClick={nextSong} />
-            <input
-              onChange={handleProgress}
-              value={duration ? (currentTime * 100) / duration : 0}
-              type="range"
-              name="progresBar"
-              id="prgbar"
+            <MdSkipNext
+              onClick={nextSong}
+              size={30}
+              color="white"
+              cursor="pointer"
             />
           </div>
+          <Slider
+            size="small"
+            onChange={handleProgress}
+            value={duration ? (currentTime * 100) / duration : 0}
+            sx={{
+              color: '#a350d3',
+              height: 4,
+              '& .MuiSlider-thumb': {
+                width: 8,
+                height: 8,
+                transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                '&:before': {
+                  boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
+                },
+              },
+            }}
+          />
         </div>
-        <div style={{ marginRight: 24 }}>
+
+        <div
+          style={{
+            marginRight: 24,
+            gap: 16,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <IoRepeat
+            size={30}
             onClick={() => toggleRepeat(player.repeat)}
             color={player.repeat ? 'white' : 'gray'}
+            cursor="pointer"
           />
           <IoShuffle
+            size={30}
             onClick={() => toggleRandom(player.random)}
             color={player.random ? 'white' : 'gray'}
+            cursor="pointer"
           />
-          <div>
-            <IoVolumeMedium />
-            <input
-              value={Math.round(volume * 100)}
-              type="range"
-              name="volBar"
-              id="volBar"
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <IoVolumeMedium size={30} color="white" />
+            <Slider
               onChange={(e) => handleVolume(e.target.value / 100)}
+              aria-label="Volume"
+              defaultValue={Math.round(volume * 100)}
+              sx={{
+                width: 100,
+                color: 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
+                '& .MuiSlider-track': {
+                  border: 'none',
+                },
+                '& .MuiSlider-thumb': {
+                  width: 16,
+                  height: 16,
+                  backgroundColor: '#fff',
+                },
+              }}
             />
           </div>
         </div>

@@ -1,12 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Typography, CircularProgress } from '@mui/material';
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { useParams } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import LikeButton from '../components/LikeButton';
-import CommentBox from '../components/CBox';
+import CommentBox from '../components/CommentBox';
 import placeholderImg from '../components/images/playlistPlaceholder.png';
-import { GET_COMMENTS } from '../queries/commentQuery';
+import {
+  GET_COMMENTS,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '../queries/commentQuery';
+import ImageCard from '../components/ImageCard';
+import GridContainer from '../components/GridContainer';
+import TrackCard from '../components/TrackCard';
+import LoadingIcon from '../components/LoadingIcon';
+import Comment from '../components/Comment';
+import { MainTitle, SubTitle } from '../components/Typographies';
+import { connect } from 'react-redux';
 
 const GET_ARTIST = gql`
   query Artist($artistId: ID!) {
@@ -21,6 +31,7 @@ const GET_ARTIST = gql`
     }
     artistTopTracks(id: $artistId) {
       name
+      preview_url
       duration_ms
       id
       album {
@@ -29,6 +40,10 @@ const GET_ARTIST = gql`
         images {
           url
         }
+      }
+      artists {
+        name
+        id
       }
     }
     artistAlbums(id: $artistId) {
@@ -55,9 +70,10 @@ const GET_ARTIST = gql`
   }
 `;
 
-const ArtistDetail = () => {
+const ArtistDetail = ({ getFetchedComments, state }) => {
+  const { comments } = state;
   const [artist, setArtist] = useState(undefined);
-  const [comments, setComments] = useState(undefined);
+  //const [comments, setComments] = useState(undefined);
   const { id } = useParams();
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const { fetchToken, userFavorites } = useContext(TokenContext);
@@ -73,7 +89,7 @@ const ArtistDetail = () => {
     } = await getComments({
       variables: { type, pageId },
     });
-    setComments(commentData);
+    getFetchedComments(commentData);
   };
 
   const isLiked = () => {
@@ -94,94 +110,80 @@ const ArtistDetail = () => {
     if (artist) {
       fetchComments(artist.type, artist.id);
     }
-  }, [error, userFavorites, loading, artist, comments]);
+  }, [error, userFavorites, loading, artist, id]);
 
-  const getTypeAndId = () => ({ type: artist.type, refId: artist.id });
+  const getTypeAndId = () => ({ type: artist?.type, refId: artist?.id });
 
   return (
     <>
-      <p> {(loading || error) && 'Loading..'} </p>
+      {(loading || error) && <LoadingIcon />}
       {data && artist && (
         <div>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', width: '70vw', margin: '48px auto' }}>
             <img
               src={(artist?.images && artist?.images[0]?.url) || placeholderImg}
-              style={{ width: '20vw' }}
+              style={{ width: '15vw' }}
             />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography component="h1" variant="h2">
-                {artist?.name}
-              </Typography>
-            </div>
-            {loggedInUser && (
-              <LikeButton
-                trackId={artist.id}
-                type={artist.type}
-                userId={loggedInUser.id}
-                isLiked={isLiked()}
-              />
-            )}
-          </div>
 
-          <Typography component="h3" variant="h4">
-            Popular tracks
-          </Typography>
-          {data.artistTopTracks &&
-            data.artistTopTracks.map((m) => (
-              <Link to={`/track/${m.id}`} key={m.id}>
-                <img src={m.album?.images[0].url} style={{ width: '40px' }} />
-                <span>{m.name}</span>
-                <span>{m.album.name}</span>
-              </Link>
-            ))}
-          <Typography component="h3" variant="h4">
-            Albums
-          </Typography>
-          {data.artistAlbums &&
-            data.artistAlbums.map((m) => (
-              <Link key={m.id} to={`/album/${m.id}`}>
-                <img src={m.images[0].url} style={{ width: '40px' }} />
-                <span>{m.name}</span>
-                <span>{m.release_date}</span>
-                {m.artists && m.artists.map((a) => a.name)}
-              </Link>
-            ))}
-          <Typography component="h3" variant="h4">
-            Related Artists
-          </Typography>
-          {data.relatedArtists &&
-            data.relatedArtists.map((m) => (
-              <div key={m.id}>
-                <img
-                  src={m?.images[0]?.url}
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    backgroundColor: 'gray',
-                  }}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                marginLeft: 30,
+              }}
+            >
+              <MainTitle>{artist?.name}</MainTitle>
+
+              {loggedInUser && (
+                <LikeButton
+                  trackId={artist.id}
+                  type={artist.type}
+                  userId={loggedInUser.id}
+                  isLiked={isLiked()}
                 />
-                <span>{m.name}</span>
-              </div>
+              )}
+            </div>
+          </div>
+          <SubTitle style={{ marginLeft: '5rem' }}>Popular tracks</SubTitle>
+          <div style={{ width: '80vw' }}>
+            {data.artistTopTracks &&
+              data.artistTopTracks.map((track) => (
+                <TrackCard
+                  key={track.id}
+                  track={track}
+                  favorites={userFavorites}
+                />
+              ))}
+            <SubTitle style={{ marginLeft: '5rem' }}>Albums</SubTitle>
+            <GridContainer visible={true}>
+              {data.artistAlbums &&
+                data.artistAlbums.map((album) => (
+                  <ImageCard element={album} type="album" key={album.id} />
+                ))}
+            </GridContainer>
+            <SubTitle style={{ marginTop: 24, marginLeft: '5rem' }}>
+              Related Artists
+            </SubTitle>
+            <GridContainer visible={true}>
+              {data?.relatedArtists &&
+                data?.relatedArtists.map((r) => (
+                  <ImageCard element={r} type={artist?.type} key={r.id} />
+                ))}
+            </GridContainer>
+          </div>
+          {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
+          {Array.isArray(comments) &&
+            comments?.map((comment) => (
+              <Comment
+                commentData={comment}
+                key={comment.id}
+                loggedInUser={loggedInUser.id}
+              />
             ))}
         </div>
       )}
-
-      <Typography component="h1" variant="h4">
-        Comments
-      </Typography>
-      {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
-      {Array.isArray(comments) &&
-        comments?.map((comment) => (
-          <div>
-            <span>
-              {comment.owner.nickname}
-              {': '}
-            </span>
-            <span>{comment.text}</span>
-          </div>
-        ))}
     </>
   );
 };
 
-export default ArtistDetail;
+export default connect(mapStateToProps, mapDispatchToProps)(ArtistDetail);

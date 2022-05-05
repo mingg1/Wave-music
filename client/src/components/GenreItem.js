@@ -6,10 +6,6 @@ const GenreItem = ({ genre, clickEvt, selected }) => {
   const [toggled, setToggled] = useState(false);
   const [border, setBorder] = useState(false);
 
-  //   useEffect(() => {
-
-  //   }, [selected]);
-
   return (
     <li
       onClick={() => {
@@ -28,6 +24,7 @@ const GenreItem = ({ genre, clickEvt, selected }) => {
         fontWeight: 600,
         border: border && '3px solid black',
         cursor: (selected < 5 || toggled) && 'pointer',
+        listStyleType: 'none',
       }}
     >
       {genre}

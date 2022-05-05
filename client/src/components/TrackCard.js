@@ -63,7 +63,13 @@ const TrackCard = ({ track, favorites, owner }) => {
         <Link
           id={track?.id}
           to={`/track/${track?.id}`}
-          style={{ marginBottom: 8 }}
+          style={{
+            marginBottom: 8,
+            textDecoration: 'none',
+            fontWeight: 600,
+            color: 'black',
+            fontSize: 18,
+          }}
         >
           {track?.name}
         </Link>
@@ -73,7 +79,12 @@ const TrackCard = ({ track, favorites, owner }) => {
               key={artist.id}
               id={artist.id}
               to={`/artist/${artist.id}`}
-              style={{ marginRight: 12 }}
+              style={{
+                marginRight: 12,
+                fontWeight: 600,
+                textDecoration: 'none',
+                color: '#05396d',
+              }}
             >
               {artist.name}
             </Link>

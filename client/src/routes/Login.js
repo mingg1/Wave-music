@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { gql, useLazyQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import AuthContext from '../contexts/auth-context';
 import {
@@ -8,7 +8,6 @@ import {
   TextField,
   Box,
   Button,
-  Link,
   CircularProgress,
 } from '@mui/material';
 
@@ -147,9 +146,7 @@ const Login = () => {
           Log In
         </Button>
       </Box>
-      <Link href="/signup" variant="body2">
-        {"Don't have an account?"}
-      </Link>
+      <Link to="/signup">{"Don't have an account?"}</Link>
     </div>
   );
 };

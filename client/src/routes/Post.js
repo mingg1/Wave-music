@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { fetchPost } from '../store';
 import PostCard from '../components/PostCard';
 import LoadingIcon from '../components/LoadingIcon';
+import { MainTitle, SubTitle } from '../components/Typographies';
 
 const POSTS = gql`
   {
@@ -28,28 +29,37 @@ const Post = ({ state, fetchPost }) => {
   const { loading, data, error } = useQuery(POSTS);
 
   useEffect(() => {
-    console.log(loading, data);
     if (data && posts.length === 0) {
       fetchPost(data.posts);
     }
-    console.log(posts);
   }, [loading, posts]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <Typography component="h1" variant="h2">
-        DJ Station
-      </Typography>
-      <Typography component="h2" variant="h4">
-        Share your taste and stories!
-      </Typography>
+    <>
       {(loading || error) && <LoadingIcon />}
-      {posts && (
-        <>
+      {!loading && posts && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '70%',
+            alignItems: 'center',
+          }}
+        >
+          <MainTitle>DJ Station</MainTitle>
+          <SubTitle>♬ Share your taste and stories!</SubTitle>
           {posts.map((post) => (
             <PostCard key={post?.id} post={post} />
           ))}
           <Button
+            style={{
+              width: 200,
+              fontFamily: 'Montserrat',
+              fontWeight: 600,
+              borderRadius: 16,
+              alignSelf: 'flex-end',
+              marginTop: 24,
+            }}
             variant="contained"
             onClick={() => {
               navigate('write');
@@ -57,9 +67,9 @@ const Post = ({ state, fetchPost }) => {
           >
             Write post
           </Button>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

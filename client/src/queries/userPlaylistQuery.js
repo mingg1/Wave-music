@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { add, addTracks, deletePlaylist } from '../store';
 
 export const GET_USER_PLAYLISTS = gql`
   query UserPlaylists($userId: ID!) {
@@ -28,6 +29,14 @@ export const GET_USER_PLAYLISTS = gql`
   }
 `;
 
+export const DELETE_PLAYLIST = gql`
+  mutation DeletePlaylist($playlistId: ID!) {
+    deletePlaylist(playlistId: $playlistId) {
+      id
+    }
+  }
+`;
+
 export const getPlaylistsQuery = async (getUserPlaylists) => {
   try {
     const { data } = await getUserPlaylists({
@@ -40,6 +49,16 @@ export const getPlaylistsQuery = async (getUserPlaylists) => {
   } catch (e) {
     console.log(e);
   }
+};
 
-  //  setUserPlaylists((prevState) => userPlaylists);
+export const mapStateToProps = (state) => {
+  return { state };
+};
+
+export const mapDispatchToProps = (dispatch) => {
+  return {
+    addPlayList: (playlist) => dispatch(add(playlist)),
+    addTrack: (newPl) => dispatch(addTracks(newPl)),
+    deletePlaylist: (playlist) => dispatch(deletePlaylist(playlist)),
+  };
 };

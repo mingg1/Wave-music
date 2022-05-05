@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { FaPlay } from 'react-icons/fa';
 import { addSong, setCurrentSong } from '../store';
 
 const PlayButton = ({ track, songsSet, state, setCurrentSong }) => {
+  const [hovered, setHovered] = useState(false);
   const { player } = state;
   return (
     <div
@@ -17,6 +18,7 @@ const PlayButton = ({ track, songsSet, state, setCurrentSong }) => {
       }}
     >
       <FaPlay
+        color={hovered ? '#b48cff' : 'white'}
         size={40}
         style={{
           position: 'absolute',
@@ -25,6 +27,8 @@ const PlayButton = ({ track, songsSet, state, setCurrentSong }) => {
           bottom: '25px',
           cursor: 'pointer',
         }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         onClick={() => {
           songsSet(track);
           setCurrentSong(player.songs.length);

@@ -10,6 +10,7 @@ import Select from 'react-select';
 import { useForm, Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { fetch } from '../store';
+import { SubTitle } from '../components/Typographies';
 
 const GET_PL = gql`
   {
@@ -31,30 +32,7 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   padding: 0 10% 0 10%;
-`;
-
-const PlaylistContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  width: 85%;
-  grid-gap: 30px 0;
-`;
-
-const PlaylistItemContainer = styled.div`
-  width: fit-content;
-`;
-
-const GET_USER_PLAYLISTS = gql`
-  query UserPlaylists($userId: ID!) {
-    userPlaylists(userId: $userId) {
-      id
-      name
-      userMade
-      tracks {
-        id
-      }
-    }
-  }
+  margin-top: 10vh;
 `;
 
 export const getPlaylists = async (getUserPlaylists) => {
@@ -72,11 +50,6 @@ export const getPlaylists = async (getUserPlaylists) => {
 
   //  setUserPlaylists((prevState) => userPlaylists);
 };
-
-const mapDispatchToProps = (dispatch) => ({
-  getPlaylists: async (getUserPlaylists) =>
-    dispatch(fetch(await getPlaylists(getUserPlaylists))),
-});
 
 const searchOptions = [
   { value: 'album', label: 'Album' },
@@ -123,6 +96,23 @@ const Home = () => {
 
   return (
     <Container>
+      <Typography
+        component="h1"
+        variant="h4"
+        fontSize="6rem"
+        fontFamily="Montserrat"
+      >
+        Wave
+      </Typography>
+      <Typography
+        component="h2"
+        variant="h2"
+        fontSize="2rem"
+        fontWeight={600}
+        fontFamily="Montserrat"
+      >
+        Music around you 🎵
+      </Typography>
       <form
         style={{ display: 'flex', alignItems: 'center' }}
         onSubmit={handleSubmit((data) => {
@@ -142,6 +132,7 @@ const Home = () => {
           onChange={handleSearchOptionChange}
           placeholder="Search By..."
           MenuProps={MenuProps}
+          styles={{ width: 300 }}
         />
         <Controller
           name="searchQuery"
@@ -153,55 +144,21 @@ const Home = () => {
               margin="normal"
               required
               label="Search by"
+              sx={{ width: '40vw' }}
             />
           )}
         />
 
-        <Button type="submit" variant="contained" sx={{ height: 56, ml: 5 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ height: 56, ml: 5, fontFamily: 'Montserrat', fontWeight: 600 }}
+        >
           Search
         </Button>
       </form>
-
-      <Typography component="h1" variant="h4">
-        Featured playlists
-      </Typography>
-
-      <Carousel itemsToShow={4} itemsToScroll={4}>
-        {data &&
-          data.featuredPaylists.map((pl) => {
-            return (
-              <div key={pl.id} style={{ width: 'fit-content' }}>
-                <Link
-                  id={pl.id}
-                  to={`/playlist/${pl.id}`}
-                  state={{
-                    name: pl.name,
-                    description: pl.description,
-                    coverImg: pl.images[0].url,
-                  }}
-                >
-                  <img
-                    src={pl.images[0].url}
-                    style={{ width: 140, borderRadius: 15 }}
-                  />
-                </Link>
-                <Link
-                  id={pl.id}
-                  to={`/playlist/${pl.id}`}
-                  state={{
-                    name: pl.name,
-                    description: pl.description,
-                    coverImg: pl.images[0].url,
-                  }}
-                >
-                  <h5>{pl.name}</h5>
-                </Link>
-              </div>
-            );
-          })}
-      </Carousel>
     </Container>
   );
 };
 
-export default connect(null, mapDispatchToProps)(Home);
+export default Home;

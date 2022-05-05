@@ -10,8 +10,17 @@ const postSlice = createSlice({
       return action.payload;
     },
     add: (state, action) => {
-      console.log(action.payload);
       state.push(action.payload);
+    },
+    editPost: (state, action) => {
+      const { id, title, description, createdAt } = action.payload;
+      if (state.length !== 0) {
+        const index = state.findIndex((post) => post.id === id);
+        const newPosts = [...state];
+        newPosts[index].title = title;
+        newPosts[index].description = description;
+        newPosts[index].createdAt = createdAt;
+      }
     },
     remove: (state, action) =>
       state.filter((post) => post.id !== action.payload),
@@ -23,11 +32,9 @@ const commentSlice = createSlice({
   initialState: [],
   reducers: {
     fetch: (state, action) => {
-      console.log(action.payload);
       return action.payload;
     },
     add: (state, action) => {
-      console.log(action.payload);
       state.push(action.payload);
     },
     remove: (state, action) =>
@@ -68,7 +75,6 @@ const userPlaylistSlice = createSlice({
   initialState: [],
   reducers: {
     fetch: (state, action) => {
-      console.log(action.payload);
       return action.payload;
     },
     add: (state, action) => {
@@ -81,7 +87,6 @@ const userPlaylistSlice = createSlice({
       newPlaylist[index].tracks = tracks;
     },
     deleteTracks: (state, action) => {
-      console.log(action.payload);
       const { playlistId, trackId } = action.payload;
       const index = state.findIndex((pl) => pl.id === playlistId);
       const newPlaylist = [...state];
@@ -89,6 +94,8 @@ const userPlaylistSlice = createSlice({
         (track) => track.id !== trackId
       );
     },
+    deletePlaylist: (state, action) =>
+      state.filter((pl) => pl.id !== action.payload.id),
   },
 });
 
@@ -111,13 +118,14 @@ export const {
   add: addPost,
   remove: removePost,
   fetch: fetchPost,
+  editPost,
 } = postSlice.actions;
 export const {
   add: addComment,
   remove: removeComment,
   fetch: fetchComments,
 } = commentSlice.actions;
-export const { fetch, add, addTracks, deleteTracks } =
+export const { fetch, add, addTracks, deleteTracks, deletePlaylist } =
   userPlaylistSlice.actions;
 export const {
   setPlayerSongs,

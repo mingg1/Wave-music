@@ -4,9 +4,10 @@ import { Typography } from '@mui/material';
 import LikeButton from '../components/LikeButton';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
-import CommentBox from '../components/CBox';
+import CommentBox from '../components/CommentBox';
 import Comment from '../components/Comment';
 import TrackCard from '../components/TrackCard';
+import { MainTitle } from '../components/Typographies';
 
 const GET_RECOMMENDATION = gql`
   query Query($seedArtists: ID, $seedGenres: String, $seedTracks: ID) {
@@ -68,12 +69,16 @@ const CurationResult = () => {
       <p> {(loading || error) && 'Loading..'} </p>
       {data && (
         <>
-          <Typography component="h3" variant="h4">
-            Recommended tracks for you!
-          </Typography>
-          {data.recommendations?.map((track) => (
-            <TrackCard key={track.id} track={track} favorites={userFavorites} />
-          ))}
+          <MainTitle>Recommended tracks for you!</MainTitle>
+          <div style={{ width: '80vw' }}>
+            {data.recommendations?.map((track) => (
+              <TrackCard
+                key={track.id}
+                track={track}
+                favorites={userFavorites}
+              />
+            ))}
+          </div>
         </>
       )}
     </>

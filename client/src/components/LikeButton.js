@@ -53,7 +53,7 @@ const LikeButton = (props) => {
       style={{ fontSize: 25, padding: 0 }}
       onClick={() => {
         saveFavorite(trackId, type, userId, addFavorite);
-        setLiked(() => !isLiked);
+        setLiked((prev) => !prev);
       }}
     >
       {liked ? <FaHeart /> : <FaRegHeart />}

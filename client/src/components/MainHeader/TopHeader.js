@@ -1,36 +1,50 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../../contexts/auth-context';
+import styled from 'styled-components';
+import { SubTitle } from '../Typographies';
 
-const TopHeader = (props) => {
+const TopBar = styled.div`
+  height: 75px;
+  width: 100%;
+  background-color: black;
+  display: grid;
+  position: fixed;
+  margin-top: 0;
+  margin-bottom: 50px;
+  grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr 3fr;
+  justify-items: center;
+  align-items: center;
+  z-index: 1;
+  align-content: center;
+`;
+
+const TopHeader = () => {
   const { isLoggedIn, onLogout } = useContext(AuthContext);
   const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
-  const topBarStyle = {
-    height: '75px',
-    width: '100%',
-    backgroundColor: 'hsl(0deg, 0%, 0%)',
-    display: 'grid',
-    position: 'fixed',
-    marginTop: '0',
-    marginBottom: '50px',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr 5fr 250px',
-    justifyItems: 'center',
-    alignItems: 'center',
-    zIndex: '1',
-  };
-
-  const linkStyles = {
+  const linkStyle = {
     margin: '0 50px',
     textDecoration: 'none',
     fontSize: '16px',
+    color: 'white',
+    fontWeight: 600,
   };
+
   return (
-    <div style={topBarStyle}>
-      <NavLink to="/post">Post</NavLink>
-      <NavLink to="/curation">Curation</NavLink>
-      <NavLink to="/songs">Songs</NavLink>
-      <NavLink to="/playlists">Playlists</NavLink>
+    <TopBar>
+      <NavLink to="/" style={{ ...linkStyle }}>
+        Wave
+      </NavLink>
+      <NavLink to="/post" style={{ ...linkStyle, width: ' max-content ' }}>
+        DJ Station
+      </NavLink>
+      <NavLink to="/curation" style={{ ...linkStyle }}>
+        Curation
+      </NavLink>
+      <NavLink to="/browse" style={{ ...linkStyle }}>
+        Browse
+      </NavLink>
       <div
         style={{
           display: 'flex',
@@ -41,28 +55,26 @@ const TopHeader = (props) => {
       >
         {isLoggedIn ? (
           <>
-            <NavLink to={`/user/${loggedInUser.id}`}>
-              <h1 style={{ ...linkStyles, color: '#bfbfbf' }}>
-                Welcome, <span>{loggedInUser.nickname}</span>
-              </h1>
+            <NavLink to={`/user/${loggedInUser.id}`} style={{ ...linkStyle }}>
+              🥁 {loggedInUser.nickname}
             </NavLink>
-            <NavLink style={{ ...linkStyles }} to="/" onClick={onLogout}>
+            <NavLink style={{ ...linkStyle }} to="/" onClick={onLogout}>
               Log out
             </NavLink>
           </>
         ) : (
           <>
-            <NavLink style={{ ...linkStyles }} to="/login">
+            <NavLink style={{ ...linkStyle }} to="/login">
               Log In
             </NavLink>
-            <NavLink style={{ ...linkStyles }} to="/signup">
+            <NavLink style={{ ...linkStyle }} to="/signup">
               Sign Up
             </NavLink>
           </>
         )}
       </div>
       <div />
-    </div>
+    </TopBar>
   );
 };
 

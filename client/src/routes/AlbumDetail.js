@@ -1,12 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Typography, CircularProgress } from '@mui/material';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { Typography } from '@mui/material';
 import LikeButton from '../components/LikeButton';
 import { useParams } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
-import CommentBox from '../components/CBox';
+import CommentBox from '../components/CommentBox';
 import TrackCard from '../components/TrackCard';
-import { GET_COMMENTS } from '../queries/commentQuery';
+import {
+  GET_COMMENTS,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '../queries/commentQuery';
+import { MainTitle } from '../components/Typographies';
+import Comment from '../components/Comment';
+import { connect } from 'react-redux';
 
 const GET_ALBUM = gql`
   query Album($albumIds: ID!) {
@@ -31,11 +38,6 @@ const GET_ALBUM = gql`
             name
             id
           }
-          album {
-            images {
-              url
-            }
-          }
         }
       }
       release_date
@@ -43,9 +45,10 @@ const GET_ALBUM = gql`
   }
 `;
 
-const AlbumDetail = () => {
-  const [comments, setComments] = useState(undefined);
-
+const AlbumDetail = ({ getFetchedComments, state }) => {
+  const { comments } = state;
+  const type = 'album';
+  //const [comments, setComments] = useState(undefined);
   const [album, setAlbum] = useState([]);
   const { id } = useParams();
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
@@ -54,23 +57,24 @@ const AlbumDetail = () => {
   const { loading, data, error } = useQuery(GET_ALBUM, {
     variables: { albumIds: id },
   });
-  const getTypeAndId = () => ({ type: 'album', refId: album.id });
+  const getTypeAndId = () => ({ type, refId: album.id });
   const [getComments] = useLazyQuery(GET_COMMENTS);
   //useComments(artist?.type || null, artist?.id || null, setComments);
   const fetchComments = async (type, pageId) => {
     if ((type, pageId)) {
       const {
         data: { comments },
-        error,
       } = await getComments({
         variables: { type, pageId },
       });
-      console.log(type, pageId, data, error);
-      setComments(comments);
+      //  console.log(type, pageId, data, error);
+      //      setComments(comments);
+      getFetchedComments(comments);
     }
   };
 
   useEffect(() => {
+    console.log(comments);
     if (!loading && error) {
       fetchToken();
     }
@@ -78,11 +82,10 @@ const AlbumDetail = () => {
       setAlbum((prevState) => data.albums[0]);
     }
     if (album) {
-      console.log(album);
-      fetchComments('album', album?.id);
+      fetchComments(type, album?.id);
       //setIsliked(!!userFavorites?.albums?.map((f) => f.id)?.includes(id));
     }
-  }, [error, userFavorites, loading, album, comments]);
+  }, [error, userFavorites, loading, album]);
 
   return (
     <>
@@ -91,11 +94,11 @@ const AlbumDetail = () => {
         <>
           <div>
             <div
-              style={{ display: 'flex', width: '55vw', margin: '48px auto' }}
+              style={{ display: 'flex', width: '70vw', margin: '48px auto' }}
             >
               <img
                 src={album?.images && album.images[0].url}
-                style={{ width: '20vw', maxWidth: 280 }}
+                style={{ width: '15vw' }}
               />
               <div
                 style={{
@@ -104,9 +107,7 @@ const AlbumDetail = () => {
                 }}
               >
                 <div style={{ marginLeft: 30 }}>
-                  <Typography component="h1" variant="h3">
-                    {album.name}
-                  </Typography>
+                  <MainTitle>{album.name}</MainTitle>
                   <Typography component="h3" variant="h4">
                     {album.artists?.map((a) => a.name)}
                   </Typography>
@@ -120,7 +121,7 @@ const AlbumDetail = () => {
                   {loggedInUser && (
                     <LikeButton
                       trackId={album.id}
-                      type="album"
+                      type={type}
                       userId={loggedInUser.id}
                       isLiked={
                         !!userFavorites?.albums?.map((f) => f?.id)?.includes(id)
@@ -131,33 +132,33 @@ const AlbumDetail = () => {
               </div>
             </div>
           </div>
-          <div style={{ width: '70vw' }}>
+          <div style={{ width: '80vw' }}>
             {album.tracks?.items?.map((track) => (
               <TrackCard
                 key={track.id}
-                track={track}
+                track={{
+                  ...track,
+                  album: { images: [{ url: album.images[0]?.url }] },
+                }}
                 favorites={userFavorites}
               />
             ))}
           </div>
-          <Typography component="h1" variant="h4">
-            Comments
-          </Typography>
-          {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
-          {Array.isArray(comments) &&
-            comments?.map((comment) => (
-              <div>
-                <span>
-                  {comment.owner.nickname}
-                  {': '}
-                </span>
-                <span>{comment.text}</span>
-              </div>
-            ))}
+          <div style={{ width: '80vw' }}>
+            {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
+            {Array.isArray(comments) &&
+              comments?.map((comment) => (
+                <Comment
+                  commentData={comment}
+                  key={comment.id}
+                  loggedInUser={loggedInUser.id}
+                />
+              ))}
+          </div>
         </>
       )}
     </>
   );
 };
 
-export default AlbumDetail;
+export default connect(mapStateToProps, mapDispatchToProps)(AlbumDetail);

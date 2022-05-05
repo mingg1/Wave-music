@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { useLocation, useParams, Link, useNavigate } from 'react-router-dom';
+import { gql, useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
-import { Typography, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import LoadingIcon from '../components/LoadingIcon';
 import GridContainer from '../components/GridContainer';
 import NoLinkCard from '../components/NoLinkCard';
@@ -45,7 +45,7 @@ const CURATION = gql`
   }
 `;
 
-const toggleCategories = (setVisibility) => {
+export const toggleCategories = (setVisibility) => {
   setVisibility((prev) => !prev);
 };
 
@@ -61,7 +61,7 @@ const Curation = () => {
   const [trackListShown, setTrackListShown] = useState(true);
   const [selectedAmount, setSelectedAmount] = useState(0);
 
-  const userId = JSON.parse(localStorage.getItem('user')).id;
+  const userId = JSON.parse(localStorage.getItem('user'))?.id;
   const { fetchToken, userFavorites } = useContext(TokenContext);
   const { loading, data, error, refetch } = useQuery(CURATION, {
     variables: { userId },
@@ -86,11 +86,11 @@ const Curation = () => {
   };
 
   useEffect(() => {
+    if (!userId) navigate('/login');
     if (!loading && error) {
       fetchToken();
       refetch();
     }
-    console.log(selectedItems, selectedAmount);
   }, [error, userFavorites, selectedItems, loading]);
 
   return (
@@ -98,7 +98,7 @@ const Curation = () => {
       {(loading || error) && <LoadingIcon />}
       {data && (
         <>
-          <MainTitle>Welcome! {data.user.nickname}</MainTitle>
+          <MainTitle>Suggestions for you, {data.user.nickname}</MainTitle>
           <SubTitle>
             🎯 Choose up to 5 options to get recommendations based on your
             favorites and genres
@@ -181,7 +181,7 @@ const Curation = () => {
               navigate('results', { state: { ...selectedItems } });
             }}
           >
-            Get Recommendations
+            Get Suggestions
           </Button>
         </>
       )}

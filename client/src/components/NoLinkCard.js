@@ -43,7 +43,17 @@ const NoLinkCard = ({ element, clickEvt, selected }) => {
           maxWidth: '100%',
         }}
       />
-      <h5>{element.name}</h5>
+      <h5
+        style={{
+          marginBottom: 8,
+          textDecoration: 'none',
+          fontWeight: 600,
+          color: 'black',
+          fontSize: 18,
+        }}
+      >
+        {element.name}
+      </h5>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import TokenContext from '../contexts/token-context';
 import ImageCard from '../components/ImageCard';
 import GridContainer from '../components/GridContainer';
 import TrackCard from '../components/TrackCard';
+import { MainTitle, SubTitle } from '../components/Typographies';
 
 const SEARCH = gql`
   query Search($query: String!, $type: String!) {
@@ -76,12 +77,12 @@ const Search = () => {
   }, [error, userFavorites]);
 
   return (
-    <div>
-      <Typography>Searched by '{query}'</Typography>
+    <div style={{ width: '80vw' }}>
+      <MainTitle>Searched by '{query}'</MainTitle>
       {(searchType === 'album' || searchType === 'all') && (
         <>
-          <Typography>Albums</Typography>
-          <GridContainer>
+          <SubTitle>Albums</SubTitle>
+          <GridContainer visible={true}>
             {data?.search?.albums?.items?.map((album) => (
               <ImageCard element={album} type="album" />
             ))}
@@ -90,8 +91,8 @@ const Search = () => {
       )}
       {(searchType === 'artist' || searchType === 'all') && (
         <>
-          <Typography>Artists</Typography>
-          <GridContainer>
+          <SubTitle>Artists</SubTitle>
+          <GridContainer visible={true}>
             {data?.search?.artists?.items?.map((artist) => (
               <ImageCard element={artist} type={artist.type} />
             ))}
@@ -100,7 +101,7 @@ const Search = () => {
       )}
       {(searchType === 'track' || searchType === 'all') && (
         <>
-          <Typography>Tracks</Typography>
+          <SubTitle>Tracks</SubTitle>
 
           {data?.search?.tracks?.items?.map((track) => (
             <TrackCard key={track.id} track={track} favorites={userFavorites} />
@@ -109,7 +110,7 @@ const Search = () => {
       )}
       {(searchType === 'user' || searchType === 'all') && (
         <>
-          <Typography>Users</Typography>
+          <SubTitle>Users</SubTitle>
           <GridContainer>
             {data?.search?.users?.map((user) => (
               <ImageCard

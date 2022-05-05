@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import LikeButton from '../components/LikeButton';
 import { useParams, Link } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
-import CommentBox from '../components/CBox';
+import CommentBox from '../components/CommentBox';
 import Comment from '../components/Comment';
 import TrackCard from '../components/TrackCard';
 import { connect } from 'react-redux';
@@ -13,6 +13,8 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from '../queries/commentQuery';
+import { MainTitle, SubTitle } from '../components/Typographies';
+import LoadingIcon from '../components/LoadingIcon';
 
 const GET_TRACK = gql`
   query Track($trackId: ID!) {
@@ -89,6 +91,7 @@ const TrackDetail = ({ getFetchedComments, state }) => {
   };
 
   useEffect(() => {
+    console.log(track.id);
     if (!loading && error) {
       fetchToken();
     }
@@ -98,55 +101,74 @@ const TrackDetail = ({ getFetchedComments, state }) => {
     if (track) {
       fetchComments(track.type, track.id);
     }
-  }, [error, userFavorites, track, loading]);
+  }, [error, userFavorites, track, loading, id]);
 
   return (
     <>
-      <p> {(loading || error) && 'Loading..'} </p>
+      {(loading || error) && <LoadingIcon />}
       {data && track && (
-        <>
-          <div>
-            <div style={{ display: 'flex' }}>
-              <img
-                src={track?.album?.images && track?.album?.images[0]?.url}
-                style={{ width: '20vw', maxWidth: 280 }}
-              />
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ marginLeft: 30 }}>
-                  <Typography component="h1" variant="h3">
-                    {track.name}
-                  </Typography>
-                  <Typography component="h3" variant="h4">
-                    {track.artists?.map((a) => a.name)}
-                  </Typography>
-
-                  {loggedInUser && (
-                    <LikeButton
-                      trackId={track.id}
-                      type={track.type}
-                      userId={loggedInUser.id}
-                      isLiked={
-                        !!userFavorites?.tracks?.map((f) => f.id)?.includes(id)
-                      }
-                    />
-                  )}
+        <div style={{ width: '70vw', margin: '48px auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              width: '60vw',
+              margin: '48px auto',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <img
+              src={track?.album?.images && track?.album?.images[0]?.url}
+              style={{ width: '15vw', height: '15vw' }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ marginLeft: 30 }}>
+                <MainTitle>{track.name}</MainTitle>
+                <div style={{ display: 'flex', gap: 24 }}>
+                  {track.artists?.map((a) => (
+                    <SubTitle key={a.id}>
+                      <Link to={`/artist/${a.id}`}>{a.name}</Link>
+                    </SubTitle>
+                  ))}
                 </div>
+                {loggedInUser && (
+                  <LikeButton
+                    trackId={track.id}
+                    type={track.type}
+                    userId={loggedInUser.id}
+                    isLiked={
+                      !!userFavorites?.tracks?.map((f) => f.id)?.includes(id)
+                    }
+                  />
+                )}
               </div>
             </div>
           </div>
-          <Typography component="h3" variant="h4">
-            Recommendations
-          </Typography>
-          {data.recommendations?.map((track) => (
-            <TrackCard key={track.id} track={track} favorites={userFavorites} />
-          ))}
 
-          {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
-          {Array.isArray(comments) &&
-            comments?.map((comment) => (
-              <Comment commentData={comment} key={comment.id} />
+          <div style={{ width: '100%', margin: 'auto' }}>
+            <div style={{ marginLeft: '5rem' }}>
+              <SubTitle>Related Tracks</SubTitle>
+            </div>
+            {data.recommendations?.map((track) => (
+              <TrackCard
+                key={track.id}
+                track={track}
+                favorites={userFavorites}
+              />
             ))}
-        </>
+
+            {loggedInUser && (
+              <CommentBox key={track.id} getTypeAndId={getTypeAndId} />
+            )}
+            {Array.isArray(comments) &&
+              comments?.map((comment) => (
+                <Comment
+                  commentData={comment}
+                  key={comment.id}
+                  loggedInUser={loggedInUser.id}
+                />
+              ))}
+          </div>
+        </div>
       )}
     </>
   );

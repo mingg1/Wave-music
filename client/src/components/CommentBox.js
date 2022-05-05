@@ -3,8 +3,8 @@ import { gql, useMutation } from '@apollo/client';
 import { connect } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Box, Button, Typography } from '@mui/material';
-import { addComment } from '../store';
 import { mapDispatchToProps } from '../queries/commentQuery';
+import { SubTitle } from './Typographies';
 
 const ADD_COMMENTS = gql`
   mutation Mutation(
@@ -55,7 +55,6 @@ const CommentBox = (props) => {
   const addComment = async (data) => {
     const { comment: text } = data;
     const owner = JSON.parse(localStorage.getItem('user')).id;
-
     const variables = getVariables({ text, owner, type, refId });
     try {
       const addedComment = await addComments({ variables });
@@ -69,13 +68,11 @@ const CommentBox = (props) => {
     console.log(error, errors);
   };
   return (
-    <div style={{ height: '100%', paddingTop: 80 }}>
-      <Typography component="h3" variant="h4">
-        Comments
-      </Typography>
-      <Typography component="h5" variant="h5">
-        🎼 How do you feel about this {type}?
-      </Typography>
+    <div
+      style={{ height: '100%', paddingTop: 80, width: '80%', margin: 'auto' }}
+    >
+      <SubTitle>Comments</SubTitle>
+      <SubTitle>🎼 How do you feel about this {type}?</SubTitle>
       <Box component="form" onSubmit={handleSubmit(addComment, onError)}>
         <Controller
           name="comment"

@@ -32,7 +32,11 @@ const TrackItem = ({ track, clickEvt, selected }) => {
       }}
     >
       <img
-        style={{ width: 90, height: 90 }}
+        style={{
+          width: 90,
+          height: 90,
+          borderRadius: toggled ? '14px 0 0 14px' : 0,
+        }}
         src={track?.album?.images[0]?.url || placeholder}
       />
 

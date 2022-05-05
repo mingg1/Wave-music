@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { gql, useLazyQuery, useMutation } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import AuthContext from '../contexts/auth-context';
 import {
@@ -8,7 +8,6 @@ import {
   TextField,
   Box,
   Button,
-  Link,
   CircularProgress,
 } from '@mui/material';
 
@@ -28,7 +27,7 @@ const REGISTER = gql`
 `;
 
 const Signup = () => {
-  const { isLoggedIn, onLogin } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [userRegister] = useMutation(REGISTER);
   const navigate = useNavigate();
@@ -154,6 +153,7 @@ const Signup = () => {
               required
               fullWidth
               label="Password"
+              helperText="Password should be longer than 8 letters"
             />
           )}
         />
@@ -178,9 +178,7 @@ const Signup = () => {
           Sign Up
         </Button>
       </Box>
-      <Link href="/login" variant="body2">
-        Already have an account?
-      </Link>
+      <Link to="/login">Already have an account?</Link>
     </div>
   );
 };

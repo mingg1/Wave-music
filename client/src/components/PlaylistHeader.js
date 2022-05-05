@@ -1,9 +1,10 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 import playlistPlaceholder from './images/playlistPlaceholder.png';
-import { MdPlayCircleFilled } from 'react-icons/md';
 import { setPlayerSongs, setCurrentSong, togglePlaying } from '../store';
 import { connect } from 'react-redux';
+import DeletePlaylistBtn from './DeletePlaylistBtn';
+import PlaylistPlayBtn from './PlaylistPlayBtn';
 
 const PlaylistHeader = ({
   element,
@@ -25,25 +26,34 @@ const PlaylistHeader = ({
         ) || [];
 
   return (
-    <div style={{ display: 'flex', width: '80%' }}>
+    <div
+      style={{
+        display: 'flex',
+        width: '80%',
+        margin: 'auto',
+        marginBottom: '2rem',
+      }}
+    >
       <img
         src={element?.coverImg || playlistPlaceholder}
-        style={{ width: '20vw' }}
+        style={{ width: '30%', marginRight: '2rem' }}
       />
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <Typography component="h1" variant="h2">
           {element?.name}
         </Typography>
         <Typography component="h5" variant="h5">
           {element?.description || element?.owner}
         </Typography>
-        <MdPlayCircleFilled
-          size={40}
-          onClick={() => {
-            songsSet(playableList);
-            togglePlaying(player.playing);
-          }}
-        />
+        <div style={{ display: 'flex', gap: 16 }}>
+          <PlaylistPlayBtn
+            setPlaylist={() => {
+              songsSet(playableList);
+              !player.playing && togglePlaying(player.playing);
+            }}
+          />
+          {element?.owner && <DeletePlaylistBtn />}
+        </div>
       </div>
     </div>
   );

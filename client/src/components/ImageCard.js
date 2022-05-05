@@ -5,7 +5,6 @@ import playlistPlaceholder from './images/playlistPlaceholder.png';
 const ImageCard = ({ element, type, userMade }) => {
   return (
     <div
-      key={element.id}
       style={{
         borderRadius: 15,
         margin: 'auto',
@@ -21,8 +20,8 @@ const ImageCard = ({ element, type, userMade }) => {
     >
       <Link
         state={userMade && { userMade }}
-        id={element.id}
-        to={`/${type}/${element.id}`}
+        id={element?.id}
+        to={`/${type}/${element?.id}`}
         style={{
           minWidth: '100%',
           /* min-height: 100%; */
@@ -31,7 +30,7 @@ const ImageCard = ({ element, type, userMade }) => {
         }}
       >
         <img
-          alt={element.type}
+          alt={element?.type || type}
           src={
             (element?.images && element?.images[0]?.url) || playlistPlaceholder
           }
@@ -44,11 +43,18 @@ const ImageCard = ({ element, type, userMade }) => {
         />
       </Link>
       <Link
+        style={{
+          margin: '8px 0',
+          textDecoration: 'none',
+          fontWeight: 600,
+          color: 'black',
+          fontSize: 18,
+        }}
         state={userMade && { userMade }}
-        id={element.id}
-        to={`/${type}/${element.id}`}
+        id={element?.id}
+        to={`/${type}/${element?.id}`}
       >
-        <h5>{element.name}</h5>
+        {element?.name}
       </Link>
     </div>
   );

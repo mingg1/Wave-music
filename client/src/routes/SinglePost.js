@@ -1,45 +1,41 @@
-import React, { useEffect } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import { Typography, Button, Divider } from '@mui/material';
 import { connect } from 'react-redux';
-import CommentBox from '../components/CBox';
+import CommentBox from '../components/CommentBox';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import LoadingIcon from '../components/LoadingIcon';
 import { mapDispatchToProps, mapStateToProps } from '../queries/commentQuery';
 import Comment from '../components/Comment';
+import { DELETE_POST, SINGLE_POST } from '../queries/singlePostQuery';
+import DeleteDialog from '../components/DeleteDialog';
+import { MainTitle, SubTitle } from '../components/Typographies';
 
-const POST = gql`
-  query Query($postId: ID!, $type: String!) {
-    post(postId: $postId) {
-      id
-      title
-      description
-      owner {
-        id
-        nickname
-      }
-      createdAt
-    }
-    comments(type: $type, pageId: $postId) {
-      owner {
-        id
-        nickname
-      }
-      text
-      id
-      createdAt
-    }
-  }
-`;
-
-const SinglePost = ({ state, getFetchedComments }) => {
+const SinglePost = ({ state, getFetchedComments, removePost }) => {
   const { comments } = state;
   const { id } = useParams();
   const navigate = useNavigate();
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
-  const { loading, error, data } = useQuery(POST, {
+  const { loading, error, data } = useQuery(SINGLE_POST, {
     variables: { postId: id, type: 'post' },
   });
+  const [deletePostMutation] = useMutation(DELETE_POST);
+  const [dialogOpened, setDialogOpened] = useState(false);
+
+  const handleClose = () => setDialogOpened(!dialogOpened);
+  const handleDelete = async () => {
+    try {
+      await deletePostMutation({
+        variables: { postId: id },
+      });
+      handleClose(dialogOpened);
+      removePost(id);
+      navigate('/post');
+      alert('The post has been deleted');
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const getTypeAndId = () => ({ type: 'post', refId: id });
 
   useEffect(() => {
@@ -54,6 +50,7 @@ const SinglePost = ({ state, getFetchedComments }) => {
       {data && (
         <div
           style={{
+            fontFamily: 'Montserrat',
             display: 'flex',
             flexDirection: 'column',
             width: '70%',
@@ -61,47 +58,56 @@ const SinglePost = ({ state, getFetchedComments }) => {
             backgroundColor: 'rgba(255, 255, 255, 0.4)',
           }}
         >
-          <Typography component="h1" variant="h2">
-            {data.post.title}
-          </Typography>
-          <Link to={`/user/${data.post.owner?.id}`}>
-            {data.post.owner?.nickname}
-          </Link>
-          <Typography component="span">
-            Created:{' '}
-            {new Date(+data.post.createdAt).toLocaleDateString('en-EN')}
-          </Typography>
-          {data.post.owner.id === loggedInUser.id && (
-            <div style={{ display: 'flex' }}>
-              <Button
-                variant="filled"
-                style={{ width: 30 }}
-                onClick={() => {
-                  navigate('write');
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="filled"
-                style={{ width: 30 }}
-                onClick={() => {
-                  navigate('write');
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          )}
+          <MainTitle>{data.post.title}</MainTitle>
+          <SubTitle>
+            Written by{'    '}
+            <Link to={`/user/${data.post.owner?.id}`}>
+              {data.post.owner?.nickname}
+            </Link>
+          </SubTitle>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography component="span">
+              Created:{' '}
+              {new Date(+data.post.createdAt).toLocaleDateString('fi-FI')}
+            </Typography>
+            {data.post.owner.id === loggedInUser?.id && (
+              <div style={{ display: 'flex' }}>
+                <DeleteDialog
+                  isOpened={dialogOpened}
+                  handleClose={handleClose}
+                  handleDelete={handleDelete}
+                  type="post"
+                />
+                <Button
+                  variant="filled"
+                  style={{ width: 30 }}
+                  onClick={() => {
+                    navigate('edit');
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="filled"
+                  style={{ width: 30 }}
+                  onClick={handleClose}
+                >
+                  Delete
+                </Button>
+              </div>
+            )}
+          </div>
           <Divider />
-          <Typography>{data.post.description}</Typography>
+          <p style={{ minHeight: 100, marginLeft: 24, fontSize: '1.2rem' }}>
+            {data.post.description}
+          </p>
           {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
           {Array.isArray(comments) &&
             comments?.map((comment) => {
               return (
                 <Comment
                   commentData={comment}
-                  key={comment.key}
+                  key={comment.id}
                   loggedInUser={loggedInUser?.id}
                 />
               );

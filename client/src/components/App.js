@@ -19,6 +19,8 @@ import WritePost from '../routes/WritePost';
 import SinglePost from '../routes/SinglePost';
 import Curation from '../routes/Curation';
 import CurationResult from '../routes/CurationResult';
+import EditPost from '../routes/EditPost';
+import Browse from '../routes/Browse';
 
 const Container = styled.div`
   display: flex;
@@ -46,12 +48,13 @@ const App = () => {
             <Route exact path="/signup" element={<SignUp />} />
             <Route exact path="/search" element={<Search />} />
             <Route exact path="/post" element={<Post />} />
-            <Route exact path="/post/wirte" element={<WritePost />} />
+            <Route exact path="/post/write" element={<WritePost />} />
             <Route exact path="/post/:id" element={<SinglePost />} />
+            <Route exact path="/post/:id/edit" element={<EditPost />} />
             <Route exact path="/track/:id" element={<TrackDetail />} />
             <Route exact path="/artist/:id" element={<ArtistDetail />} />
             <Route exact path="/album/:id" element={<AlbumDetail />} />
-            <Route exact path="/playlist" element={<PlayListDetail />} />
+            <Route exact path="/browse" element={<Browse />} />
             <Route exact path="/playlist/:id" element={<PlayListDetail />} />
             <Route exact path="/user/:id" element={<User />} />
             <Route exact path="/curation" element={<Curation />} />
