@@ -8,7 +8,7 @@ export default gql`
   }
 
   type Album {
-    id: String!
+    id: ID!
     album_type: String
     name: String!
     images: [Image]

@@ -159,3 +159,4 @@ Temporary Items
 
 # Folder for compiled files to deploy
 server/build
+client/lib

@@ -6,6 +6,7 @@ export default {
       //   parent.albums?.filter((album) => album).toString() || args.ids;
 
       const albumList = parent.albums;
+      console.log(albumList);
       if (albumList.length > 20) {
         const albums = new Array();
         const arrayAmount = Math.ceil(albumList.length / 20);
@@ -18,6 +19,7 @@ export default {
         return albums.flat();
       } else {
         const ids = parent.artists?.filter((t) => t).toString() || args.ids;
+        console.log(ids);
         return await dataSources.spotifyAPI.getAlbums(sf_token, ids);
       }
     },

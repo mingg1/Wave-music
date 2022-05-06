@@ -36,7 +36,6 @@ export default {
       return await login(req);
     },
     userFavorites: async (parent, { id }, { req }) => {
-      console.log(await Favorite.findOne({ owner: id }).populate('owner'));
       return await Favorite.findOne({ owner: id }).populate('owner');
     },
     userByNickname: async (_, { nickname }) => {
@@ -48,7 +47,9 @@ export default {
   },
   Mutation: {
     addFavorite: async (_, { id, type, userId }, { req }) => {
+      console.log(type, id);
       const userFavorites = await Favorite.findOne({ owner: userId });
+      console.log(userFavorites);
       switch (type) {
         case 'track':
           let tracks = userFavorites.tracks;
