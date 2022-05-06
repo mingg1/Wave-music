@@ -12,7 +12,6 @@ const TrackItem = ({ track, clickEvt, selected }) => {
 
   return (
     <div
-      key={track.id}
       style={{
         paddingRight: 16,
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
@@ -24,7 +23,7 @@ const TrackItem = ({ track, clickEvt, selected }) => {
         cursor: (selected < 5 || toggled) && 'pointer',
       }}
       onClick={() => {
-        clickEvt(track.id, track.type);
+        clickEvt(track?.id, track?.type);
         if (selected < 5 || toggled) {
           setBorder(!toggled);
           setToggled(!toggled);
@@ -55,13 +54,13 @@ const TrackItem = ({ track, clickEvt, selected }) => {
         <div style={{ display: 'flex' }}>
           {track?.artists?.map((artist, i) => (
             <Typography
-              key={artist.id}
+              key={artist?.id}
               fontFamily="Montserrat"
               fontWeight="500"
               style={{ marginRight: 6 }}
             >
-              {artist.name}
-              {i !== track.artists.length - 1 && ','}
+              {artist?.name}
+              {i !== track?.artists?.length - 1 && ','}
             </Typography>
           ))}
         </div>

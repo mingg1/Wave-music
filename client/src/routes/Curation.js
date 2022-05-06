@@ -132,14 +132,15 @@ const Curation = () => {
             shown={artistListShown}
           />
           <GridContainer visible={artistListShown}>
-            {data.user?.favorites?.artists?.map((artist) => (
-              <NoLinkCard
-                key={artist.id}
-                element={artist}
-                selected={selectedAmount}
-                clickEvt={setOptions}
-              />
-            ))}
+            {data.user?.favorites?.artists &&
+              data.user?.favorites?.artists?.map((artist) => (
+                <NoLinkCard
+                  key={artist?.id}
+                  element={artist}
+                  selected={selectedAmount}
+                  clickEvt={setOptions}
+                />
+              ))}
           </GridContainer>
 
           <ToggleTitle

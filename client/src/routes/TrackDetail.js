@@ -136,7 +136,9 @@ const TrackDetail = ({ getFetchedComments, state }) => {
                     type={track.type}
                     userId={loggedInUser.id}
                     isLiked={
-                      !!userFavorites?.tracks?.map((f) => f.id)?.includes(id)
+                      !!userFavorites?.tracks
+                        ?.map((f) => f?.id)
+                        ?.includes(id) || false
                     }
                   />
                 )}

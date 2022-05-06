@@ -57,7 +57,7 @@ const AlbumDetail = ({ getFetchedComments, state }) => {
   const { loading, data, error } = useQuery(GET_ALBUM, {
     variables: { albumIds: id },
   });
-  const getTypeAndId = () => ({ type, refId: album.id });
+  const getTypeAndId = () => ({ type: 'album', refId: album?.id });
   const [getComments] = useLazyQuery(GET_COMMENTS);
   //useComments(artist?.type || null, artist?.id || null, setComments);
   const fetchComments = async (type, pageId) => {
@@ -83,6 +83,7 @@ const AlbumDetail = ({ getFetchedComments, state }) => {
     }
     if (album) {
       fetchComments(type, album?.id);
+      console.log(album);
       //setIsliked(!!userFavorites?.albums?.map((f) => f.id)?.includes(id));
     }
   }, [error, userFavorites, loading, album]);
@@ -97,7 +98,7 @@ const AlbumDetail = ({ getFetchedComments, state }) => {
               style={{ display: 'flex', width: '70vw', margin: '48px auto' }}
             >
               <img
-                src={album?.images && album.images[0].url}
+                src={album?.images && album?.images[0].url}
                 style={{ width: '15vw' }}
               />
               <div
@@ -115,14 +116,14 @@ const AlbumDetail = ({ getFetchedComments, state }) => {
                     {album.release_date}
                   </Typography>
                   <Typography component="span" variant="span">
-                    {album.album_type}
+                    {album?.album_type}
                   </Typography>
 
                   {loggedInUser && (
                     <LikeButton
-                      trackId={album.id}
-                      type={type}
-                      userId={loggedInUser.id}
+                      trackId={album?.id}
+                      type="album"
+                      userId={loggedInUser?.id}
                       isLiked={
                         !!userFavorites?.albums?.map((f) => f?.id)?.includes(id)
                       }

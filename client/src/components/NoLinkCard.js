@@ -15,7 +15,6 @@ const NoLinkCard = ({ element, clickEvt, selected }) => {
           setToggled(!toggled);
         } else setBorder(false);
       }}
-      key={element.id}
       style={{
         borderRadius: 15,
         margin: 'auto',
@@ -32,7 +31,7 @@ const NoLinkCard = ({ element, clickEvt, selected }) => {
       }}
     >
       <img
-        alt={element.type}
+        alt={element?.type}
         src={
           (element?.images && element?.images[0]?.url) || playlistPlaceholder
         }
@@ -52,7 +51,7 @@ const NoLinkCard = ({ element, clickEvt, selected }) => {
           fontSize: 18,
         }}
       >
-        {element.name}
+        {element?.name}
       </h5>
     </div>
   );

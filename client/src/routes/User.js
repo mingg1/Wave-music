@@ -27,6 +27,7 @@ const User = () => {
     if (!loading && error) {
       fetchToken();
     }
+    console.log(userFavorites);
   }, [error, userFavorites]);
 
   return (
@@ -35,7 +36,7 @@ const User = () => {
       {data && (
         <>
           <div>
-            <MainTitle>🎧 Welcome, {data.user.nickname}</MainTitle>
+            <MainTitle>🎧 Welcome, {data?.user?.nickname}</MainTitle>
           </div>
           <ToggleTitle
             onClick={() => toggleCategories(setPlaylistShown)}
@@ -67,10 +68,10 @@ const User = () => {
           </ToggleTitle>
 
           <div style={{ width: '80vw' }}>
-            {data.user.favorites.tracks &&
-              data.user.favorites.tracks?.map((track) => (
+            {data.user?.favorites?.tracks &&
+              data.user?.favorites?.tracks?.map((track) => (
                 <TrackCard
-                  key={track.id}
+                  key={track?.id}
                   track={track}
                   favorites={userFavorites}
                 />
@@ -89,8 +90,8 @@ const User = () => {
                 return (
                   <ImageCard
                     element={artist}
-                    key={artist.id}
-                    type={artist.type}
+                    key={artist?.id}
+                    type={artist?.type}
                   />
                 );
               })}
@@ -105,7 +106,6 @@ const User = () => {
           {data.user.favorites?.albums && (
             <GridContainer visible={albumListShown}>
               {data.user.favorites?.albums?.map((album) => {
-                console.log(album);
                 return (
                   <ImageCard element={album} key={album?.id} type="album" />
                 );

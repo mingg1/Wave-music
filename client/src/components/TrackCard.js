@@ -20,7 +20,6 @@ const TrackCard = ({ track, favorites, owner }) => {
   const [isPlayBtnShown, setIsPlayBtnShown] = useState(false);
   return (
     <div
-      key={track.id}
       style={{
         maxWidth: '80%',
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
@@ -100,7 +99,9 @@ const TrackCard = ({ track, favorites, owner }) => {
             trackId={track?.id}
             type={track?.type}
             userId={loggedInUser.id}
-            isLiked={favorites?.tracks?.map((f) => f.id).includes(track.id)}
+            isLiked={
+              favorites?.tracks?.map((f) => f?.id)?.includes(track?.id) || false
+            }
           />
           <AddTrackButton
             key={track?.id}

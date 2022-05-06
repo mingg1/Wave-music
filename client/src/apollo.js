@@ -20,7 +20,9 @@ const authLink = setContext(async (_, { headers }) => {
     },
   };
 });
-const SERVER_URL = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+const SERVER_URL = new HttpLink({
+  uri: 'https://wave-music-server.azurewebsites.net/graphql',
+});
 const appLink = from([errorLink, SERVER_URL]);
 
 const client = new ApolloClient({

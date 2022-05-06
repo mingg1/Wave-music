@@ -44,6 +44,7 @@ const LikeButton = (props) => {
   const [addFavorite] = useMutation(TOGGLE_FAVORITE);
 
   useEffect(() => {
+    console.log(trackId, type, userId, isLiked);
     setLiked(isLiked);
   }, [isLiked]);
   // ♥ ♡
