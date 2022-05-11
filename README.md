@@ -20,6 +20,10 @@ By giving seed artists, tracks from user's favorites with genres, users can get 
 [Backend Graphql server](https://wave-music-server.azurewebsites.net/graphql)
 <br>
 
+## ERD
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/61379336/167941862-ab702d28-809b-416c-9c85-4e06375ce653.png">
+
+
 ## Features
 
 - **Register / Login**
