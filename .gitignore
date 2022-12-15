@@ -137,7 +137,6 @@ dist
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -160,3 +159,6 @@ Temporary Items
 # Folder for compiled files to deploy
 server/build
 client/lib
+
+*.png
+*.gif
