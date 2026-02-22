@@ -1,18 +1,18 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import { onError } from '@apollo/client/link/error';
+import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    console.error('GQL ERROR: ', graphQLErrors);
+    console.error("GQL ERROR: ", graphQLErrors);
   }
   if (networkError) {
-    console.error('NETWORK ERROR: ', networkError);
+    console.error("NETWORK ERROR: ", networkError);
   }
 });
 
 const authLink = setContext(async (_, { headers }) => {
-  const { sf_token } = JSON.parse(localStorage.getItem('sf-token')) || {};
+  const { sf_token } = JSON.parse(localStorage.getItem("sf-token")) || {};
   return {
     headers: {
       ...headers,
@@ -21,7 +21,7 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 const SERVER_URL = new HttpLink({
-  uri: 'https://wave-music-server.azurewebsites.net/graphql',
+  uri: "http://localhost:4000/graphql",
 });
 const appLink = from([errorLink, SERVER_URL]);
 
