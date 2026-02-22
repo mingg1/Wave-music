@@ -1,8 +1,9 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useMutation } from "@apollo/client/react";
 import { connect } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
-import { Button, Modal, Typography, TextField } from '@mui/material';
+import { Button, Modal, TextField } from '@mui/material';
 import { SubTitle } from './Typographies';
 import styled from 'styled-components';
 import {
@@ -129,8 +130,6 @@ const AddTrackButton = ({ trackId, userId, state, addPlayList, addTrack }) => {
       console.error(err);
     }
   };
-
-  useEffect(() => {}, []);
 
   return (
     <>

@@ -107,10 +107,23 @@ const Player = ({
   };
 
   useEffect(() => {
-    if (player.songs !== [] && player.playing) {
-      toggleAudio();
+    if (player.songs.length !== 0) {
+      // toggleAudio();
+      audio.current.pause();
+      audio.current.currentTime = 0;
+      if (player.playing)
+        audio.current.play();
     }
-  }, [player.songs, player.currentSong]);
+  }, [player.currentSong]);
+
+  useEffect(() => {
+    if (player.songs.length !== 0 && player.playing) {
+      // toggleAudio();
+      audio.current.pause();
+      audio.current.currentTime = 0;
+      audio.current.play();
+    }
+  }, [player.songs]);
 
   return (
     <PlayerContainer>

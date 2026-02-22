@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { FaPlay } from 'react-icons/fa';
 import { addSong, setCurrentSong } from '../store';
+import sampleMP3 from '../audio/alec_koff-blues-ballad-487408.mp3';
+
+const SAMPLE_MP3_URL = sampleMP3; 
 
 const PlayButton = ({ track, songsSet, state, setCurrentSong }) => {
   const [hovered, setHovered] = useState(false);
@@ -30,7 +33,7 @@ const PlayButton = ({ track, songsSet, state, setCurrentSong }) => {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => {
-          songsSet(track);
+          songsSet({...track, preview_url: SAMPLE_MP3_URL});
           setCurrentSong(player.songs.length);
           //   togglePlaying(player.playing);
         }}

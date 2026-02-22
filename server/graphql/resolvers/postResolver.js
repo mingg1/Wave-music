@@ -1,6 +1,6 @@
 'use strict';
 
-import Post from '../../models/Post';
+import Post from '../../models/Post.js';
 
 export default {
   Query: {

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client/react';
 import { useLocation, useParams } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import { connect } from 'react-redux';

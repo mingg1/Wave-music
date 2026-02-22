@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import LikeButton from './LikeButton';
-import AddTrackButton from './AddTrackButton';
 import placeholder from './images/playlistPlaceholder.png';
-import DeleteButton from './DeleteTrackButton';
 
 const TrackItem = ({ track, clickEvt, selected }) => {
   const [toggled, setToggled] = useState(false);

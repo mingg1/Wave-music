@@ -1,10 +1,12 @@
-import React from 'react';
 import { Typography } from '@mui/material';
 import playlistPlaceholder from './images/playlistPlaceholder.png';
 import { setPlayerSongs, setCurrentSong, togglePlaying } from '../store';
 import { connect } from 'react-redux';
 import DeletePlaylistBtn from './DeletePlaylistBtn';
 import PlaylistPlayBtn from './PlaylistPlayBtn';
+import sampleMP3 from '../audio/alec_koff-blues-ballad-487408.mp3';
+
+const SAMPLE_MP3_URL = sampleMP3;
 
 const PlaylistHeader = ({
   element,
@@ -17,11 +19,11 @@ const PlaylistHeader = ({
   const playableList =
     Array.isArray(playlist) && playlist[0]?.track
       ? playlist?.reduce(
-          (acc, t) => (t?.track?.preview_url ? [...acc, t.track] : acc),
+          (acc, t) => (t?.track?.preview_url ? [...acc, {...t.track, preview_url: SAMPLE_MP3_URL}] : acc),
           []
         )
       : playlist?.reduce(
-          (acc, t) => (t?.preview_url ? [...acc, t] : acc),
+          (acc, t) => (t?.preview_url ? [...acc, {...t, preview_url: SAMPLE_MP3_URL}] : acc),
           []
         ) || [];
 

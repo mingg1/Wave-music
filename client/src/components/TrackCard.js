@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import LikeButton from './LikeButton';
@@ -16,6 +16,7 @@ const calculateTrackDuration = (millisec) => {
 };
 
 const TrackCard = ({ track, favorites, owner }) => {
+
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
   const [isPlayBtnShown, setIsPlayBtnShown] = useState(false);
   return (
@@ -32,9 +33,9 @@ const TrackCard = ({ track, favorites, owner }) => {
       <div
         style={{ width: 90, height: 90 }}
         onMouseEnter={() => {
-          if (track?.preview_url) {
+          // if (track?.preview_url) {
             setIsPlayBtnShown(true);
-          }
+          // }
         }}
         onMouseLeave={() =>
           setTimeout(() => {
@@ -97,7 +98,7 @@ const TrackCard = ({ track, favorites, owner }) => {
         <div style={{ alignSelf: 'center' }}>
           <LikeButton
             trackId={track?.id}
-            type={track?.type}
+            type={track?.type === undefined ? 'track' : track?.type}
             userId={loggedInUser.id}
             isLiked={
               favorites?.tracks?.map((f) => f?.id)?.includes(track?.id) || false

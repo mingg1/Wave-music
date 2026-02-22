@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import playlistPlaceholder from './images/playlistPlaceholder.png';
+import React, { useState } from 'react';
 
 const GenreItem = ({ genre, clickEvt, selected }) => {
   const [toggled, setToggled] = useState(false);

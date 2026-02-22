@@ -1,19 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
-import TokenContext from '../contexts/token-context';
-import ImageCard from '../components/ImageCard';
-import GridContainer from '../components/GridContainer';
-import TrackCard from '../components/TrackCard';
-import { MainTitle, SubTitle } from '../components/Typographies';
+import React, { useContext, useEffect } from "react";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import TokenContext from "../contexts/token-context";
+import ImageCard from "../components/ImageCard";
+import GridContainer from "../components/GridContainer";
+import TrackCard from "../components/TrackCard";
+import { MainTitle, SubTitle } from "../components/Typographies";
+
+const SEARCH_BY_NICKNAME = gql`
+  query UserByNickname($nickname: String) {
+    userByNickname(nickname: $nickname) {
+      id
+      nickname
+    }
+  }
+`;
 
 const SEARCH = gql`
   query Search($query: String!, $type: String!) {
     search(query: $query, type: $type) {
-      users {
-        nickname
-        id
-      }
       albums {
         items {
           name
@@ -63,23 +68,29 @@ const Search = () => {
   const { fetchToken, userFavorites } = useContext(TokenContext);
   const search = window.location.search;
   const params = new URLSearchParams(search);
-  const query = params.get('query');
-  const searchType = params.get('type');
+  const query = params.get("query");
+  const searchType = params.get("type");
 
   const { loading, data, error } = useQuery(SEARCH, {
     variables: { query, type: searchType },
+    skip: (searchType === "user" ),
+  });
+
+  const { data: userData } = useQuery(SEARCH_BY_NICKNAME, {
+    variables: { nickname: query },
+    skip: searchType !== "user" && searchType !== "all",
   });
 
   useEffect(() => {
-    if (!loading && error) {
-      fetchToken();
-    }
-  }, [error, userFavorites]);
+    console.log("search data: ", data);
+    if (userData)
+      console.log("user data: ", userData.userByNickname);
+  }, [data, userData]);
 
   return (
-    <div style={{ width: '80vw' }}>
+    <div style={{ width: "80vw" }}>
       <MainTitle>Searched by '{query}'</MainTitle>
-      {(searchType === 'album' || searchType === 'all') && (
+      {(searchType === "album" || searchType === "all") && (
         <>
           <SubTitle>Albums</SubTitle>
           <GridContainer visible={true}>
@@ -89,7 +100,7 @@ const Search = () => {
           </GridContainer>
         </>
       )}
-      {(searchType === 'artist' || searchType === 'all') && (
+      {(searchType === "artist" || searchType === "all") && (
         <>
           <SubTitle>Artists</SubTitle>
           <GridContainer visible={true}>
@@ -99,7 +110,7 @@ const Search = () => {
           </GridContainer>
         </>
       )}
-      {(searchType === 'track' || searchType === 'all') && (
+      {(searchType === "track" || searchType === "all") && (
         <>
           <SubTitle>Tracks</SubTitle>
 
@@ -108,16 +119,18 @@ const Search = () => {
           ))}
         </>
       )}
-      {(searchType === 'user' || searchType === 'all') && (
+      {(searchType === "user" || searchType === "all") && (
         <>
           <SubTitle>Users</SubTitle>
-          <GridContainer>
-            {data?.search?.users?.map((user) => (
-              <ImageCard
-                element={{ id: user.id, name: user.nickname }}
-                type="user"
-              />
-            ))}
+          <GridContainer visible={true}>
+            { userData?.userByNickname && <ImageCard
+              key={userData.userByNickname.id}
+              element={{
+                id: userData.userByNickname.id,
+                name: userData.userByNickname.nickname,
+              }}
+              type="user"
+            />}
           </GridContainer>
         </>
       )}

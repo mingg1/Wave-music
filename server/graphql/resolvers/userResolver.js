@@ -1,33 +1,32 @@
-'use strict';
-import bcrypt from 'bcrypt';
-import User from '../../models/User';
-import Favorite from '../../models/Favorite';
-import Track from '../../models/Track';
-import { login } from '../../utils/auth';
+"use strict";
+import bcrypt from "bcrypt";
+import User from "../../models/User.js";
+import Favorite from "../../models/Favorite.js";
+import { login } from "../../utils/auth.js";
 
 export default {
   Comment: {
     owner: async (parent) => {
       return await User.findById(parent.owner).populate({
-        path: 'favorites',
-        populate: [{ path: 'owner', model: User }],
+        path: "favorites",
+        populate: [{ path: "owner", model: User }],
       });
     },
   },
   UserPlaylist: {
     owner: async (parent) => {
       return await User.findById(parent.owner).populate({
-        path: 'favorites',
-        populate: [{ path: 'owner', model: User }],
+        path: "favorites",
+        populate: [{ path: "owner", model: User }],
       });
     },
   },
   Query: {
-    user: async (parent, { id }) => {
+    user: async (parent, { id }, { req }) => {
       // find user by id
       return await User.findById(id).populate({
-        path: 'favorites',
-        populate: [{ path: 'owner', model: User }],
+        path: "favorites",
+        populate: [{ path: "owner", model: User }],
       });
     },
     login: async (parent, args, { req }) => {
@@ -36,22 +35,23 @@ export default {
       return await login(req);
     },
     userFavorites: async (parent, { id }, { req }) => {
-      return await Favorite.findOne({ owner: id }).populate('owner');
+      const res = await Favorite.findOne({ owner: id }).populate("owner");
+      return res;
     },
     userByNickname: async (_, { nickname }) => {
+      console.log("nickname: ", nickname);
       return await User.findOne({ nickname }).populate({
-        path: 'favorites',
-        populate: [{ path: 'owner', model: User }],
+        path: "favorites",
+        populate: [{ path: "owner", model: User }],
       });
     },
   },
   Mutation: {
     addFavorite: async (_, { id, type, userId }, { req }) => {
-      console.log(type, id);
       const userFavorites = await Favorite.findOne({ owner: userId });
-      console.log(userFavorites);
+      
       switch (type) {
-        case 'track':
+        case "track":
           let tracks = userFavorites.tracks;
           if (tracks.includes(id)) {
             userFavorites.tracks = tracks.filter((trackId) => trackId !== id);
@@ -59,26 +59,28 @@ export default {
             userFavorites.tracks.push(id);
           }
           break;
-        case 'album':
+        case "album":
           let albums = userFavorites.albums;
           if (albums.includes(id)) {
             userFavorites.albums = albums.filter((albumId) => albumId !== id);
           } else userFavorites.albums.push(id);
           break;
-        case 'artist':
+        case "artist":
           let artists = userFavorites.artists;
-          if (artists.includes(id)) {
-            userFavorites.artists = artists.filter(
-              (artistId) => artistId !== id
-            );
-          } else userFavorites.artists.push(id);
+          const artistIndex = artists.findIndex((artistId) => artistId === id);
+          
+          if (artistIndex !== -1) {
+            userFavorites.artists.splice(artistIndex, 1);
+          } else {
+            userFavorites.artists.push(id);
+          }
+          
           break;
         default:
           break;
       }
       await userFavorites.save();
-
-      return await userFavorites;
+      return userFavorites;
     },
     registerUser: async (parent, args) => {
       try {
@@ -101,7 +103,7 @@ export default {
       try {
         const user = await context.currentUser;
         if (!user) {
-          throw new AuthenticationError('Not authorized');
+          throw new AuthenticationError("Not authorized");
         }
         let userInfo = { ...args };
         if (args.password) {
@@ -111,7 +113,7 @@ export default {
         return await User.findByIdAndUpdate(
           user._id,
           { ...userInfo },
-          { new: true }
+          { new: true },
         );
       } catch (error) {
         throw new Error(error);

@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
-import { createSearchParams, Link, useNavigate } from 'react-router-dom';
-import '../App.css';
-import TokenContext from '../contexts/token-context';
-import styled from 'styled-components';
-import { Button, Typography, TextField } from '@mui/material';
-import Carousel from 'react-elastic-carousel';
-import Select from 'react-select';
-import { useForm, Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
-import { fetch } from '../store';
-import { SubTitle } from '../components/Typographies';
+import React, { useContext, useEffect, useState } from "react";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import { createSearchParams, useNavigate } from "react-router-dom";
+import "../App.css";
+import TokenContext from "../contexts/token-context";
+import styled from "styled-components";
+import { Button, Typography, TextField } from "@mui/material";
+import Select from "react-select";
+import { useForm, Controller } from "react-hook-form";
 
 const GET_PL = gql`
   {
-    featuredPaylists {
+    Paylists {
       id
       name
       images {
@@ -39,7 +36,7 @@ export const getPlaylists = async (getUserPlaylists) => {
   try {
     const { data } = await getUserPlaylists({
       variables: {
-        userId: JSON.parse(localStorage.getItem('user'))?.id,
+        userId: JSON.parse(localStorage.getItem("user"))?.id,
       },
     });
 
@@ -52,11 +49,11 @@ export const getPlaylists = async (getUserPlaylists) => {
 };
 
 const searchOptions = [
-  { value: 'album', label: 'Album' },
-  { value: 'artist', label: 'Artist' },
-  { value: 'track', label: 'Track' },
-  { value: 'user', label: 'User' },
-  { value: 'all', label: 'All' },
+  { value: "album", label: "Album" },
+  { value: "artist", label: "Artist" },
+  { value: "track", label: "Track" },
+  { value: "user", label: "User" },
+  { value: "all", label: "All" },
 ];
 
 const MenuProps = {
@@ -70,29 +67,26 @@ const MenuProps = {
 
 const Home = () => {
   const navigate = useNavigate();
-  const { fetchToken, sfToken } = useContext(TokenContext);
-  const { loading, error, data, refetch } = useQuery(GET_PL);
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm();
+  const { fetchToken } = useContext(TokenContext);
+  // const { loading, error, data, refetch } = useQuery(GET_PL);
+  const { register, handleSubmit, control } = useForm();
   const [selectedSearchOption, setSelectedSearchOption] = useState(null);
   const handleSearchOptionChange = (selectedOption) => {
     setSelectedSearchOption(selectedOption.value);
   };
 
-  useEffect(() => {
-    // validation
-    //  fetchToken();
-    if (!loading && error) {
-      fetchToken();
-      refetch();
-    }
-    //  getPlaylists(getUserPlaylists);
-    // update or not
-  }, [error, data]);
+  // useEffect(() => {
+  //   if (loading) return ;
+  //   if (!error) return ;
+  //   // validation
+  //   //  fetchToken();
+ 
+  //     fetchToken();
+  //     // refetch();
+  // console.log(data);
+  //   //  getPlaylists(getUserPlaylists);
+  //   // update or not
+  // }, [error, loading]);
 
   return (
     <Container>
@@ -114,12 +108,12 @@ const Home = () => {
         Music around you 🎵
       </Typography>
       <form
-        style={{ display: 'flex', alignItems: 'center' }}
+        style={{ display: "flex", alignItems: "center" }}
         onSubmit={handleSubmit((data) => {
           console.log(selectedSearchOption);
           const { searchQuery } = data;
           navigate({
-            pathname: 'search',
+            pathname: "search",
             search: createSearchParams({
               type: selectedSearchOption,
               query: searchQuery,
@@ -139,12 +133,12 @@ const Home = () => {
           control={control}
           render={() => (
             <TextField
-              {...register('searchQuery')}
+              {...register("searchQuery")}
               type="text"
               margin="normal"
               required
               label="Search by"
-              sx={{ width: '40vw' }}
+              sx={{ width: "40vw" }}
             />
           )}
         />
@@ -152,7 +146,7 @@ const Home = () => {
         <Button
           type="submit"
           variant="contained"
-          sx={{ height: 56, ml: 5, fontFamily: 'Montserrat', fontWeight: 600 }}
+          sx={{ height: 56, ml: 5, fontFamily: "Montserrat", fontWeight: 600 }}
         >
           Search
         </Button>

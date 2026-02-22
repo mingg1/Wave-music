@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
+import { gql } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client/react';
 import LikeButton from '../components/LikeButton';
 import { useParams, Link } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
@@ -42,29 +42,29 @@ const GET_TRACK = gql`
       type
     }
 
-    recommendations(seedTracks: $trackId) {
-      id
-      duration_ms
-      name
-      preview_url
-      album {
-        id
-        images {
-          url
-        }
-        name
-        artists {
-          id
-          name
-        }
-      }
-      artists {
-        name
-        id
-        genres
-      }
-      type
-    }
+    # recommendations(seedTracks: $trackId) {
+    #   id
+    #   duration_ms
+    #   name
+    #   preview_url
+    #   album {
+    #     id
+    #     images {
+    #       url
+    #     }
+    #     name
+    #     artists {
+    #       id
+    #       name
+    #     }
+    #   }
+    #   artists {
+    #     name
+    #     id
+    #     genres
+    #   }
+    #   type
+    # }
   }
 `;
 
@@ -74,7 +74,7 @@ const TrackDetail = ({ getFetchedComments, state }) => {
   const getTypeAndId = () => ({ type: track.type, refId: track.id });
   const { id } = useParams();
   const loggedInUser = JSON.parse(localStorage.getItem('user')) || null;
-  const { fetchToken, userFavorites } = useContext(TokenContext);
+  const { fetchToken, userFavorites, tokenReady } = useContext(TokenContext);
   const { loading, data, error } = useQuery(GET_TRACK, {
     variables: { trackId: id },
   });
@@ -91,17 +91,19 @@ const TrackDetail = ({ getFetchedComments, state }) => {
   };
 
   useEffect(() => {
-    console.log(track.id);
-    if (!loading && error) {
-      fetchToken();
-    }
+    // if (!loading && error) {
+    //   fetchToken();
+    // }
+    if (tokenReady)
+      console.log(track.type);
     if (data && data.tracks) {
       setTrack(data.tracks[0]);
     }
     if (track) {
       fetchComments(track.type, track.id);
     }
-  }, [error, userFavorites, track, loading, id]);
+
+  }, [error, userFavorites, track, loading, id, tokenReady]);
 
   return (
     <>
@@ -133,7 +135,7 @@ const TrackDetail = ({ getFetchedComments, state }) => {
                 {loggedInUser && (
                   <LikeButton
                     trackId={track.id}
-                    type={track.type}
+                    type={track.type === undefined ? "track" : track.type}
                     userId={loggedInUser.id}
                     isLiked={
                       !!userFavorites?.tracks

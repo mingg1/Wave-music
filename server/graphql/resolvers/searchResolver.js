@@ -1,4 +1,4 @@
-import User from '../../models/User';
+import User from "../../models/User.js";
 
 export default {
   Query: {
@@ -6,20 +6,20 @@ export default {
       const { sf_token } = req.headers;
       const getUsers = async () => {
         const users = await User.find({
-          nickname: { $regex: query, $options: 'i' },
+          nickname: { $regex: query, $options: "i" },
         });
         return { users };
       };
-      if (type === 'user') {
+      if (type === "user") {
         return getUsers();
-      } else if (type === 'all') {
+      } else if (type === "all") {
         const { users } = await getUsers();
 
-        type = 'album,artist,track';
+        type = "album,artist,track";
         const sfData = await dataSources.spotifyAPI.search(
           sf_token,
           query,
-          type
+          type,
         );
 
         return { ...sfData, users };

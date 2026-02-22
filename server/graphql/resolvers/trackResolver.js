@@ -25,6 +25,8 @@ export default {
   Favorite: {
     tracks: async (parent, args, { dataSources, req }) => {
       const { sf_token } = req.headers;
+      if (parent.tracks?.length === 0 && !args.ids)
+        return null;
       const favTracks = parent.tracks;
       if (favTracks.length > 20) {
         const trackDataList = new Array();

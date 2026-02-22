@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
 import { Typography } from '@mui/material';
 import LikeButton from '../components/LikeButton';
 import { useParams } from 'react-router-dom';
@@ -74,7 +75,6 @@ const AlbumDetail = ({ getFetchedComments, state }) => {
   };
 
   useEffect(() => {
-    console.log(comments);
     if (!loading && error) {
       fetchToken();
     }

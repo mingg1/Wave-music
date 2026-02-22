@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from "@apollo/client/react";
 import { Typography, Button, Divider } from '@mui/material';
 import { connect } from 'react-redux';
 import CommentBox from '../components/CommentBox';

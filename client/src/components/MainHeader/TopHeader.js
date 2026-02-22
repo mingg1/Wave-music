@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../../contexts/auth-context';
 import styled from 'styled-components';
-import { SubTitle } from '../Typographies';
 
 const TopBar = styled.div`
   height: 75px;
@@ -39,9 +38,9 @@ const TopHeader = () => {
       <NavLink to="/post" style={{ ...linkStyle, width: ' max-content ' }}>
         DJ Station
       </NavLink>
-      <NavLink to="/curation" style={{ ...linkStyle }}>
+      {/* <NavLink to="/curation" style={{ ...linkStyle }}>
         Curation
-      </NavLink>
+      </NavLink> */}
       <NavLink to="/browse" style={{ ...linkStyle }}>
         Browse
       </NavLink>

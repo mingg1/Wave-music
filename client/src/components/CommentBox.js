@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useMutation } from "@apollo/client/react";
 import { connect } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Box, Button, Typography } from '@mui/material';

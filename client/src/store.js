@@ -1,6 +1,4 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
-import thunk from 'redux-thunk';
-const middleware = [thunk];
 
 const postSlice = createSlice({
   name: 'posts',
@@ -143,6 +141,5 @@ export default configureStore({
     userPlaylist: userPlaylistSlice.reducer,
     currentPlaylist: currentPlSlice.reducer,
     player: playerSlice.reducer,
-  },
-  middleware,
+  }
 });

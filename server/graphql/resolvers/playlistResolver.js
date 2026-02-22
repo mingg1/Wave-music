@@ -1,16 +1,17 @@
-import Playlist from '../../models/Playlist';
+import Playlist from "../../models/Playlist.js";
 
 export default {
   Query: {
-    featuredPaylists: async (_, __, { dataSources, req }) => {
+    Paylists: async (_, __, { dataSources, req }) => {
+      const id = '3cEYpjA9oz9GiPac4AsH4n';
       const { sf_token } = req.headers;
-      return await dataSources.spotifyAPI.getFeaturedPlayList(sf_token);
+      return await dataSources.spotifyAPI.getPlayList(sf_token, id);
     },
     playlistTracks: async (_, { playlistId }, { dataSources, req }) => {
       const { sf_token } = req.headers;
       const data = await dataSources.spotifyAPI.getPlayListItems(
         sf_token,
-        playlistId
+        playlistId,
       );
       return data;
     },

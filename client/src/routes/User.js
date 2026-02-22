@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client/react';
+import { useParams } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
-import { Typography } from '@mui/material';
-
 import TrackCard from '../components/TrackCard';
 import LoadingIcon from '../components/LoadingIcon';
 import GridContainer from '../components/GridContainer';
@@ -14,7 +12,7 @@ import { toggleCategories } from './Curation';
 
 const User = () => {
   const { id } = useParams();
-  const { fetchToken, userFavorites } = useContext(TokenContext);
+  const { userFavorites, tokenReady } = useContext(TokenContext);
   const { loading, data, error } = useQuery(GET_USER_INFO, {
     variables: { userId: id },
   });
@@ -23,16 +21,9 @@ const User = () => {
   const [trackListShown, setTrackListShown] = useState(true);
   const [playlistShown, setPlaylistShown] = useState(true);
 
-  useEffect(() => {
-    if (!loading && error) {
-      fetchToken();
-    }
-    console.log(userFavorites);
-  }, [error, userFavorites]);
-
   return (
     <>
-      {(loading || error) && <LoadingIcon />}
+      {(loading || error || !tokenReady) && <LoadingIcon />}
       {data && (
         <>
           <div>

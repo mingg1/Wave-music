@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { Typography, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { fetchPost } from '../store';
-import PostCard from '../components/PostCard';
-import LoadingIcon from '../components/LoadingIcon';
-import { MainTitle, SubTitle } from '../components/Typographies';
+import React, { useEffect } from "react";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import { fetchPost } from "../store";
+import PostCard from "../components/PostCard";
+import LoadingIcon from "../components/LoadingIcon";
+import { MainTitle, SubTitle } from "../components/Typographies";
 
 const POSTS = gql`
   {
@@ -40,10 +41,10 @@ const Post = ({ state, fetchPost }) => {
       {!loading && posts && (
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '70%',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            width: "70%",
+            alignItems: "center",
           }}
         >
           <MainTitle>DJ Station</MainTitle>
@@ -54,15 +55,15 @@ const Post = ({ state, fetchPost }) => {
           <Button
             style={{
               width: 200,
-              fontFamily: 'Montserrat',
+              fontFamily: "Montserrat",
               fontWeight: 600,
               borderRadius: 16,
-              alignSelf: 'flex-end',
+              alignSelf: "flex-end",
               marginTop: 24,
             }}
             variant="contained"
             onClick={() => {
-              navigate('write');
+              navigate("write");
             }}
           >
             Write post

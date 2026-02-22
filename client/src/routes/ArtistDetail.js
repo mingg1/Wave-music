@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client/react';
 import { useParams } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import LikeButton from '../components/LikeButton';
@@ -60,13 +61,13 @@ const GET_ARTIST = gql`
       }
       type
     }
-    relatedArtists(id: $artistId) {
-      id
-      name
-      images {
-        url
-      }
-    }
+    # relatedArtists(id: $artistId) {
+    #   id
+    #   name
+    #   images {
+    #     url
+    #   }
+    # }
   }
 `;
 
@@ -94,8 +95,8 @@ const ArtistDetail = ({ getFetchedComments, state }) => {
 
   const isLiked = () => {
     try {
-      return userFavorites.artists.map((f) => f.id).includes(artist?.id);
-    } catch {
+      return userFavorites.artists.some(artistItem => artistItem.id === artist?.id);
+    } catch (error) {
       return false;
     }
   };

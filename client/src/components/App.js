@@ -17,8 +17,8 @@ import Player from './Player';
 import Post from '../routes/Post';
 import WritePost from '../routes/WritePost';
 import SinglePost from '../routes/SinglePost';
-import Curation from '../routes/Curation';
-import CurationResult from '../routes/CurationResult';
+// import Curation from '../routes/Curation';
+// import CurationResult from '../routes/CurationResult';
 import EditPost from '../routes/EditPost';
 import Browse from '../routes/Browse';
 
@@ -57,12 +57,12 @@ const App = () => {
             <Route exact path="/browse" element={<Browse />} />
             <Route exact path="/playlist/:id" element={<PlayListDetail />} />
             <Route exact path="/user/:id" element={<User />} />
-            <Route exact path="/curation" element={<Curation />} />
+            {/* <Route exact path="/curation" element={<Curation />} />
             <Route
               exact
               path="/curation/results"
               element={<CurationResult />}
-            />
+            /> */}
           </Routes>
         </Container>
         <Player />

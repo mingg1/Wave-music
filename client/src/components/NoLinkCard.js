@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import playlistPlaceholder from './images/playlistPlaceholder.png';
 
 const NoLinkCard = ({ element, clickEvt, selected }) => {

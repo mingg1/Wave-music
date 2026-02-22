@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-import Comment from '../../models/Comment';
+import Comment from "../../models/Comment.js";
 
 export default {
   Query: {
     comments: async (_, { type, pageId }) => {
       try {
         let comments;
-        if (type === 'post') {
+        if (type === "post") {
           comments = await Comment.find({ type, postId: pageId });
         } else comments = await Comment.find({ type, refId: pageId });
         return comments;

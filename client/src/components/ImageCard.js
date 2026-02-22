@@ -1,9 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import playlistPlaceholder from './images/playlistPlaceholder.png';
 
 const ImageCard = ({ element, type, userMade }) => {
-  console.log(element);
   return (
     <div
       style={{

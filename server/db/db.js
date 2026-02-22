@@ -4,13 +4,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const DB_URL = process.env.DB_URL;
+const DB_NAME = process.env.DB_NAME || 'wave';
+
 (async () => {
   try {
-    return await mongoose.connect(process.env.DB_URL, {
-      dbName: process.env.DB_NAME || 'wave',
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    return await mongoose.connect(`${DB_URL}/${DB_NAME}`);
   } catch (e) {
     console.error('Connection to db failed: ', e);
   }

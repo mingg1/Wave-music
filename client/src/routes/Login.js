@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useLazyQuery } from "@apollo/client/react";
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import AuthContext from '../contexts/auth-context';

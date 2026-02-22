@@ -2,6 +2,10 @@ export default {
   Favorite: {
     albums: async (parent, args, { dataSources, req }) => {
       const { sf_token } = req.headers;
+      // console.log("parent.albums length:", parent.albums?.length);
+      // console.log("args ", args)
+      if (parent.albums?.length === 0 && !args.ids)
+        return null;
       const ids =
         parent.albums?.filter((album) => album).toString() || args.ids;
 

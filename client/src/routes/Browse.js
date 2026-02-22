@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
-import { createSearchParams, Link, useNavigate } from 'react-router-dom';
-import '../App.css';
-import TokenContext from '../contexts/token-context';
-import styled from 'styled-components';
-import { Button, Typography, TextField } from '@mui/material';
-import Carousel from 'react-elastic-carousel';
-import Select from 'react-select';
-import { useForm, Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
-import { fetch } from '../store';
-import { MainTitle, SubTitle } from '../components/Typographies';
+import React, { useContext, useEffect } from "react";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import { Link, useNavigate } from "react-router-dom";
+import "../App.css";
+import TokenContext from "../contexts/token-context";
+import styled from "styled-components";
+import Carousel from "react-elastic-carousel";
+import { useForm } from "react-hook-form";
+import { MainTitle, SubTitle } from "../components/Typographies";
 
 const GET_PL = gql`
   {
-    featuredPaylists {
+    Paylists {
       id
       name
       images {
@@ -38,7 +35,7 @@ export const getPlaylists = async (getUserPlaylists) => {
   try {
     const { data } = await getUserPlaylists({
       variables: {
-        userId: JSON.parse(localStorage.getItem('user'))?.id,
+        userId: JSON.parse(localStorage.getItem("user"))?.id,
       },
     });
 
@@ -60,9 +57,10 @@ const MenuProps = {
 };
 
 const Browse = () => {
-  const navigate = useNavigate();
-  const { fetchToken, sfToken } = useContext(TokenContext);
-  const { loading, error, data, refetch } = useQuery(GET_PL);
+  const { fetchToken, tokenReady } = useContext(TokenContext);
+  const { loading, error, data, refetch } = useQuery(GET_PL, {
+    skip: !tokenReady,
+  });
   const {
     register,
     handleSubmit,
@@ -71,14 +69,10 @@ const Browse = () => {
   } = useForm();
 
   useEffect(() => {
-    // validation
-    //  fetchToken();
-    if (!loading && error) {
-      fetchToken();
-      refetch();
-    }
+    console.log(data);
     //  getPlaylists(getUserPlaylists);
     // update or not
+    console.log(error);
   }, [error, data]);
 
   return (
@@ -87,14 +81,14 @@ const Browse = () => {
       <SubTitle>Check featured playlists</SubTitle>
       <Carousel itemsToShow={4} itemsToScroll={4}>
         {data &&
-          data.featuredPaylists.map((pl) => {
+          data.Paylists.map((pl) => {
             return (
               <div
                 key={pl.id}
                 style={{
-                  width: 'fit-content',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  width: "fit-content",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 <Link
@@ -122,8 +116,8 @@ const Browse = () => {
                   style={{
                     marginRight: 12,
                     fontWeight: 600,
-                    textDecoration: 'none',
-                    color: '#05396d',
+                    textDecoration: "none",
+                    color: "#05396d",
                   }}
                 >
                   {pl.name}

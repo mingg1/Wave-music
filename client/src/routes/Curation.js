@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useNavigate } from 'react-router-dom';
 import TokenContext from '../contexts/token-context';
 import { Button } from '@mui/material';

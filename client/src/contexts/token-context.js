@@ -1,5 +1,6 @@
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
-import React, { useState, useEffect, createContext } from 'react';
+import { gql } from "@apollo/client";
+import React, { useState, useEffect, createContext, useRef } from "react";
+import { useLazyQuery } from "@apollo/client/react";
 
 const TokenContext = createContext();
 
@@ -28,66 +29,93 @@ const GET_USER_FAVORITES = gql`
 
 export const TokenContextProvider = (props) => {
   // const [isTokenValid, setIsTokenValid] = useState(false)
+  const [tokenReady, setTokenReady] = useState(false);
   const [userFavorites, setUserFavorites] = useState(undefined);
   const [userPlaylists, setUserPlaylists] = useState([]);
-  const [refetchFavorites, setRefetchFavorites] = useState(() => {});
-  const [sfToken, setSfToken] = useState(
-    localStorage.getItem('sf-token') || null
-  );
+  // const [refetchFavorites, setRefetchFavorites] = useState(() => {});
+  const refetchFavoritesRef = useRef(null);
+  const [sfToken, setSfToken] = useState(localStorage.getItem("sf-token"));
   const [loggedInUser, setLoggedInUser] = useState(
-    localStorage.getItem('user') || null
+    localStorage.getItem("user"),
   );
 
   const [getUserFavorites] = useLazyQuery(GET_USER_FAVORITES);
   const [getToken] = useLazyQuery(GET_SF_TOKEN);
 
   const isTokenValid = () => {
-    const tokenData = JSON.parse(sfToken);
-    let remainTime = tokenData.tokenTimeout || Date.now() - 3600000; // an hour ago from current time
-    let currentTime = new Date();
-    let tokenTime = new Date(remainTime);
-    return tokenTime > currentTime;
+    const tokenData = sfToken ? JSON.parse(sfToken) : null;
+    if (!tokenData || !tokenData.tokenTimeout) return false;
+    return tokenData.tokenTimeout > Date.now();
   };
 
   const fetchToken = async () => {
-    const {
-      data: { sf_token: token },
-    } = await getToken();
-    console.log(token);
-    const tokenTimeout = Date.now() + 3599900;
-    const data = JSON.stringify({ sf_token: token, tokenTimeout });
-    localStorage.setItem('sf-token', data);
-    setSfToken(data);
+    try {
+      const { data } = await getToken();
+      if (!data?.sf_token) return;
+      const token = data.sf_token;
+
+      const tokenTimeout = Date.now() + 3599900;
+      const tokenInfo = JSON.stringify({ sf_token: token, tokenTimeout });
+      localStorage.setItem("sf-token", tokenInfo);
+      setSfToken(tokenInfo);
+      return token;
+    } catch (error) {
+      if (error.name === "AbortError") return null;
+      console.error("Error fetching token: ", error);
+      return null;
+    }
   };
 
   const getFavorites = async (userId) => {
-    const {
-      data: { userFavorites },
-      refetch,
-    } = await getUserFavorites({
-      variables: {
-        userId: JSON.parse(loggedInUser)?.id || userId,
-      },
-    });
+    try {
+      const {
+        data: { userFavorites },
+        error,
+        refetch,
+      } = await getUserFavorites({
+        variables: {
+          userId,
+        },
+      });
+      if (error) {
+        console.error("Error fetching favorites: ", error);
+        return;
+      }
+      console.log("favorites: ", userFavorites);
+      if (userFavorites !== null && userFavorites[0] !== null) {
+        refetchFavoritesRef.current = refetch;
+        // setUserFavorites(userFavorites);
+        setUserFavorites(userFavorites);
+      }
+    } catch (error) {
+      if (error.name === "AbortError") return null;
+      console.error("Error fetching favorites: ", error);
+    }
+  };
 
-    if (userFavorites !== null && userFavorites[0] !== null) {
-      setRefetchFavorites(refetch);
-      setUserFavorites(userFavorites);
+  const refetchFavorites = async () => {
+    if (refetchFavoritesRef.current) {
+      const { data } = await refetchFavoritesRef.current();
+      if (data?.userFavorites) {
+        setUserFavorites(data.userFavorites);
+      }
     }
   };
 
   useEffect(() => {
-    // validation
-    if (sfToken === null || sfToken.token === null || !isTokenValid()) {
-      fetchToken();
-    }
-    getFavorites();
-    // getPlaylists();
-    // if (!loading || error) {
-    //   fetchToken();
-    // }
-    // update or not
-  }, [userFavorites]);
+    const init = async () => {
+      // validation
+      if (!sfToken || !isTokenValid()) {
+        await fetchToken();
+      }
+
+      if (loggedInUser) {
+        await getFavorites(JSON.parse(loggedInUser).id);
+      }
+      setTokenReady(true);
+    };
+    init();
+  }, []);
 
   return (
     <TokenContext.Provider
@@ -100,6 +128,7 @@ export const TokenContextProvider = (props) => {
         getFavorites,
         userPlaylists,
         setUserPlaylists,
+        tokenReady,
       }}
     >
       {props.children}

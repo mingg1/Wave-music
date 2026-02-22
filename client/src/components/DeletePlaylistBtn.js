@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import DeleteDialog from '../components/DeleteDialog';
-import { useMutation } from '@apollo/client';
+import { useMutation } from "@apollo/client/react";
 import {
   DELETE_PLAYLIST,
   mapDispatchToProps,

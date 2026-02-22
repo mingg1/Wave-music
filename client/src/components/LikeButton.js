@@ -1,11 +1,14 @@
-import { gql, useMutation } from '@apollo/client';
-import React, { useContext, useEffect, useState } from 'react';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { Button } from '@mui/material';
+import { gql } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
+import React, { useContext, useEffect, useState } from "react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Button } from "@mui/material";
+import TokenContext from "../contexts/token-context";
+
 
 const TOGGLE_FAVORITE = gql`
-  mutation Mutation($itemId: ID, $type: String, $userId: ID) {
-    addFavorite(id: $itemId, type: $type, userId: $userId) {
+  mutation Mutation($id: ID, $type: String, $userId: ID) {
+    addFavorite(id: $id, type: $type, userId: $userId) {
       tracks {
         id
         name
@@ -34,28 +37,45 @@ const saveFavorite = async (itemId, type, userId, mutation) => {
   if (error) {
     console.log(error);
   }
-  console.log(items);
-  //setUserFavorites(items);
+  console.log("items: ", items);
+  // setUserFavorites(items);
 };
 
 const LikeButton = (props) => {
   const { trackId, type, userId, isLiked } = props;
+  const { refetchFavorites } = useContext(TokenContext);
   const [liked, setLiked] = useState(false);
-  const [addFavorite] = useMutation(TOGGLE_FAVORITE);
+  const [addFavorite, { data }] = useMutation(TOGGLE_FAVORITE);
 
   useEffect(() => {
-    console.log(trackId, type, userId, isLiked);
+    // console.log("info: ", trackId, type, userId, isLiked);
     setLiked(isLiked);
   }, [isLiked]);
   // ♥ ♡
+
+  const handleClick = async () => {
+    setLiked((prev) => !prev);
+    try {
+      await addFavorite({
+        variables: {
+          id: trackId,
+          type,
+          userId,
+        },
+      });
+      console.log(refetchFavorites);
+      await refetchFavorites();
+    } catch (error) {
+      console.error(error);
+      setLiked((prev) => !prev);
+    }
+  };
+
   return (
     <Button
       size="x-small"
       style={{ fontSize: 25, padding: 0 }}
-      onClick={() => {
-        saveFavorite(trackId, type, userId, addFavorite);
-        setLiked((prev) => !prev);
-      }}
+      onClick={handleClick}
     >
       {liked ? <FaHeart /> : <FaRegHeart />}
     </Button>
