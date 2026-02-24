@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import LikeButton from './LikeButton';
-import AddTrackButton from './AddTrackButton';
-import PlayButton from './PlayButton';
+
 
 const PostCard = ({ post }) => {
   const navigate = useNavigate();

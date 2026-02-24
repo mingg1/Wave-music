@@ -23,7 +23,7 @@ const errorLink = new ErrorLink(async ({ error }) => {
 });
 
 const authLink = new SetContextLink(async (_, { headers }) => {
-  const raw = localStorage.getItem("sf-token");
+  let raw = localStorage.getItem("sf-token");
   const parsed = raw ? JSON.parse(raw) : null;
   const token = parsed?.sf_token;
 

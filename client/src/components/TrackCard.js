@@ -95,7 +95,7 @@ const TrackCard = ({ track, favorites, owner }) => {
         {calculateTrackDuration(track?.duration_ms)}
       </Typography>
       {loggedInUser && (
-        <div style={{ alignSelf: 'center' }}>
+        <div style={{ alignSelf: 'center' }} key={track?.id}>
           <LikeButton
             trackId={track?.id}
             type={track?.type === undefined ? 'track' : track?.type}
@@ -105,7 +105,6 @@ const TrackCard = ({ track, favorites, owner }) => {
             }
           />
           <AddTrackButton
-            key={track?.id}
             trackId={track?.id}
             userId={loggedInUser.id}
           />

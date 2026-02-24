@@ -53,7 +53,6 @@ export const TokenContextProvider = (props) => {
       const { data } = await getToken();
       if (!data?.sf_token) return;
       const token = data.sf_token;
-
       const tokenTimeout = Date.now() + 3599900;
       const tokenInfo = JSON.stringify({ sf_token: token, tokenTimeout });
       localStorage.setItem("sf-token", tokenInfo);
@@ -66,13 +65,18 @@ export const TokenContextProvider = (props) => {
     }
   };
 
-  const getFavorites = async (userId) => {
+  const getFavorites = async (userId, token) => {
     try {
       const {
         data: { userFavorites },
         error,
         refetch,
       } = await getUserFavorites({
+        context: {
+          headers: {
+            sf_token: token,
+          },
+        },
         variables: {
           userId,
         },
@@ -82,8 +86,8 @@ export const TokenContextProvider = (props) => {
         return;
       }
       console.log("favorites: ", userFavorites);
+      refetchFavoritesRef.current = refetch;
       if (userFavorites !== null && userFavorites[0] !== null) {
-        refetchFavoritesRef.current = refetch;
         // setUserFavorites(userFavorites);
         setUserFavorites(userFavorites);
       }
@@ -104,15 +108,20 @@ export const TokenContextProvider = (props) => {
 
   useEffect(() => {
     const init = async () => {
-      // validation
-      if (!sfToken || !isTokenValid()) {
-        await fetchToken();
+      try {
+        // validation
+        let token = null;
+        if (!sfToken || !isTokenValid()) {
+          token = await fetchToken();
+        } else token = JSON.parse(sfToken).sf_token;
+        if (loggedInUser && token) {
+          await getFavorites(JSON.parse(loggedInUser).id, token);
+        } 
+        if (token)
+          setTokenReady(true);
+      } catch (error) {
+        console.error("Error during token initialization: ", error);
       }
-
-      if (loggedInUser) {
-        await getFavorites(JSON.parse(loggedInUser).id);
-      }
-      setTokenReady(true);
     };
     init();
   }, []);
@@ -129,6 +138,7 @@ export const TokenContextProvider = (props) => {
         userPlaylists,
         setUserPlaylists,
         tokenReady,
+        isTokenValid
       }}
     >
       {props.children}

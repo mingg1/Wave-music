@@ -16,17 +16,6 @@ const PlaylistHeader = ({
   togglePlaying,
 }) => {
   const { player } = state;
-  const playableList =
-    Array.isArray(playlist) && playlist[0]?.track
-      ? playlist?.reduce(
-          (acc, t) => (t?.track?.preview_url ? [...acc, {...t.track, preview_url: SAMPLE_MP3_URL}] : acc),
-          []
-        )
-      : playlist?.reduce(
-          (acc, t) => (t?.preview_url ? [...acc, {...t, preview_url: SAMPLE_MP3_URL}] : acc),
-          []
-        ) || [];
-
   return (
     <div
       style={{
@@ -50,7 +39,7 @@ const PlaylistHeader = ({
         <div style={{ display: 'flex', gap: 16 }}>
           <PlaylistPlayBtn
             setPlaylist={() => {
-              songsSet(playableList);
+              songsSet(playlist.map((t) => ({ ...t, preview_url: SAMPLE_MP3_URL })));
               !player.playing && togglePlaying(player.playing);
             }}
           />

@@ -75,19 +75,6 @@ const Home = () => {
     setSelectedSearchOption(selectedOption.value);
   };
 
-  // useEffect(() => {
-  //   if (loading) return ;
-  //   if (!error) return ;
-  //   // validation
-  //   //  fetchToken();
- 
-  //     fetchToken();
-  //     // refetch();
-  // console.log(data);
-  //   //  getPlaylists(getUserPlaylists);
-  //   // update or not
-  // }, [error, loading]);
-
   return (
     <Container>
       <Typography

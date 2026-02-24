@@ -11,7 +11,7 @@ const TopBar = styled.div`
   position: fixed;
   margin-top: 0;
   margin-bottom: 50px;
-  grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr 3fr;
+  grid-template-columns: 1fr 0.5fr 0.5fr 3fr;
   justify-items: center;
   align-items: center;
   z-index: 1;

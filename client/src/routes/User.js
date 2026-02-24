@@ -1,20 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client/react';
-import { useParams } from 'react-router-dom';
-import TokenContext from '../contexts/token-context';
-import TrackCard from '../components/TrackCard';
-import LoadingIcon from '../components/LoadingIcon';
-import GridContainer from '../components/GridContainer';
-import ImageCard from '../components/ImageCard';
-import { GET_USER_INFO } from '../queries/userInfoQuery';
-import { MainTitle, SubTitle, ToggleTitle } from '../components/Typographies';
-import { toggleCategories } from './Curation';
+import React, { useContext, useEffect, useState } from "react";
+import { useQuery } from "@apollo/client/react";
+import { useParams } from "react-router-dom";
+import TokenContext from "../contexts/token-context";
+import TrackCard from "../components/TrackCard";
+import LoadingIcon from "../components/LoadingIcon";
+import GridContainer from "../components/GridContainer";
+import ImageCard from "../components/ImageCard";
+import { GET_USER_INFO } from "../queries/userInfoQuery";
+import { MainTitle, SubTitle, ToggleTitle } from "../components/Typographies";
+import { toggleCategories } from "./Curation";
 
 const User = () => {
   const { id } = useParams();
-  const { userFavorites, tokenReady } = useContext(TokenContext);
-  const { loading, data, error } = useQuery(GET_USER_INFO, {
+  const { userFavorites, sfToken } = useContext(TokenContext);
+  const { loading, data } = useQuery(GET_USER_INFO, {
     variables: { userId: id },
+    skip: !sfToken,
   });
   const [albumListShown, setAlbumListShown] = useState(true);
   const [artistListShown, setArtistListShown] = useState(true);
@@ -23,8 +24,9 @@ const User = () => {
 
   return (
     <>
-      {(loading || error || !tokenReady) && <LoadingIcon />}
-      {data && (
+      {loading && !sfToken ? (
+        <LoadingIcon />
+      ) : sfToken && data ? (
         <>
           <div>
             <MainTitle>🎧 Welcome, {data?.user?.nickname}</MainTitle>
@@ -50,7 +52,7 @@ const User = () => {
             </GridContainer>
           )}
 
-          <SubTitle style={{ color: '#1976d2' }}>Favorites</SubTitle>
+          <SubTitle style={{ color: "#1976d2" }}>Favorites</SubTitle>
           <ToggleTitle
             onClick={() => toggleCategories(setTrackListShown)}
             shown={trackListShown}
@@ -58,7 +60,7 @@ const User = () => {
             Tracks
           </ToggleTitle>
 
-          <div style={{ width: '80vw' }}>
+          <div style={{ width: "80vw" }}>
             {data.user?.favorites?.tracks &&
               data.user?.favorites?.tracks?.map((track) => (
                 <TrackCard
@@ -104,6 +106,10 @@ const User = () => {
             </GridContainer>
           )}
         </>
+      ) : (
+        <div style={{ marginTop: 100 }}>
+          <LoadingIcon />
+        </div>
       )}
     </>
   );

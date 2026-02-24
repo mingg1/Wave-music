@@ -4,6 +4,8 @@ export default {
    the list will be splitted and query will be sent as many times as generated arrays */
   UserPlaylist: {
     tracks: async (parent, args, { dataSources, req }) => {
+      if (!parent.tracks || parent.tracks.length === 0)
+        return null;
       const { sf_token } = req.headers;
       const PlTracks = parent.tracks;
       if (PlTracks.length > 20) {

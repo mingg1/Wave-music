@@ -58,12 +58,12 @@ class SpotifyAPI extends RESTDataSource {
   }
 
   async getPlayList(token, id) {
-    console.log("playlist id: ", id);
+    
     const result = await this.get(`playlists/${id}`, {
       params: { market: "US" },
       headers: { authorization: `Bearer ${token}` },
     });
-    console.log("playlist data: ", result);
+    
     return [result];
   }
 

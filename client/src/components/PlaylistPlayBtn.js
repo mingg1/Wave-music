@@ -1,4 +1,3 @@
-import React from 'react';
 import { MdPlayCircleFilled } from 'react-icons/md';
 
 const PlaylistPlayBtn = ({ setPlaylist }) => {
@@ -6,7 +5,10 @@ const PlaylistPlayBtn = ({ setPlaylist }) => {
     <MdPlayCircleFilled
       style={{ cursor: 'pointer' }}
       size={40}
-      onClick={setPlaylist}
+      onClick={()=> {
+        console.log("playlist play btn clicked");
+        setPlaylist();
+      }}
     />
   );
 };

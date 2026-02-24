@@ -64,7 +64,7 @@ const Signup = () => {
       });
 
       if (user) {
-        setLoading(false);
+        // setLoading(false);
         navigate('/login');
       }
       if (!user || error) {

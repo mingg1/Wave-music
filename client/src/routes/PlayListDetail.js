@@ -75,22 +75,19 @@ const PlayListDetail = ({ getPlaylists }) => {
   const { id } = useParams();
   const isUserMade = location.state?.userMade;
   const query = isUserMade ? GET_USER_PL_TRACKS : GET_SF_PL_TRACKS;
-  const { fetchToken, userFavorites } = useContext(TokenContext);
+  const { userFavorites,tokenReady } = useContext(TokenContext);
   const { loading, data, error } = useQuery(query, {
-    variables: { playlistId: id },
+    variables: { playlistId: id }, skip: !tokenReady
   });
   const [getUserPlaylists] = useLazyQuery(GET_USER_PLAYLISTS);
 
   useEffect(() => {
-    if (!loading && error) {
-      fetchToken();
-    }
     getPlaylists(getUserPlaylists);
-  }, [error, loading, userFavorites]);
+  }, [userFavorites]);
 
   return (
     <>
-      {(loading || error) && <LoadingIcon />}
+      {(loading || error || !tokenReady) && <LoadingIcon />}
       {data && (
         <div style={{ paddingTop: '2rem' }}>
           <PlaylistHeader

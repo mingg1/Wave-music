@@ -123,6 +123,7 @@ const Player = ({
       audio.current.currentTime = 0;
       audio.current.play();
     }
+
   }, [player.songs]);
 
   return (
@@ -146,7 +147,7 @@ const Player = ({
           }}
           src={
             (player.songs &&
-              player.songs[player.currentSong]?.album?.images[0]?.url) ||
+              player.songs[player.currentSong]?.album?.images[0]?.url) || player.songs[player.currentSong]?.track?.album?.images[0]?.url ||
             'http://www.scottishculture.org/themes/scottishculture/images/music_placeholder.png'
           }
         />
@@ -160,8 +161,8 @@ const Player = ({
           }}
         >
           <Link
-            id={player?.songs[player.currentSong]?.id}
-            to={`/track/${player?.songs[player.currentSong]?.id}`}
+            id={player?.songs[player.currentSong]?.id || player?.songs[player.currentSong]?.track?.id}
+            to={`/track/${player?.songs[player.currentSong]?.id || player?.songs[player.currentSong]?.track?.id}`}
             style={{
               marginBottom: 8,
               fontWeight: 600,
@@ -170,11 +171,12 @@ const Player = ({
               textDecoration: 'none',
             }}
           >
-            {player.songs && player.songs[player.currentSong]?.name}
+            {player.songs && player.songs[player.currentSong]?.name || player.songs[player.currentSong]?.track?.name}
           </Link>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {player.songs &&
-              player.songs[player.currentSong]?.artists?.map((artist) => (
+            {
+              player.songs[player.currentSong]?.artists ?
+              player.songs[player.currentSong]?.artists.map((artist) => (
                 <Link
                   key={artist?.id}
                   id={artist?.id}
@@ -188,7 +190,21 @@ const Player = ({
                 >
                   {artist?.name}
                 </Link>
-              ))}
+              )) : player.songs[player.currentSong]?.track?.artists?.map((artist) => (
+                <Link
+                  key={artist?.id}
+                  id={artist?.id}
+                  to={`/artist/${artist?.id}`}
+                  style={{
+                    marginRight: 12,
+                    color: 'gray',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                  }}
+                >
+                  {artist?.name}
+                </Link>))
+              }
           </div>
         </div>
 

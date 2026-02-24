@@ -17,7 +17,9 @@ export default {
     },
     userPlaylists: async (_, { userId }) => {
       try {
-        return await Playlist.find({ owner: userId });
+        const res = await Playlist.find({ owner: userId });
+        console.log('playlists found for user:', res);
+        return res;
       } catch (error) {
         throw new Error(error);
       }

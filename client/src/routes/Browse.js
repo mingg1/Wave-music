@@ -6,7 +6,6 @@ import "../App.css";
 import TokenContext from "../contexts/token-context";
 import styled from "styled-components";
 import Carousel from "react-elastic-carousel";
-import { useForm } from "react-hook-form";
 import { MainTitle, SubTitle } from "../components/Typographies";
 
 const GET_PL = gql`
@@ -61,19 +60,6 @@ const Browse = () => {
   const { loading, error, data, refetch } = useQuery(GET_PL, {
     skip: !tokenReady,
   });
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm();
-
-  useEffect(() => {
-    console.log(data);
-    //  getPlaylists(getUserPlaylists);
-    // update or not
-    console.log(error);
-  }, [error, data]);
 
   return (
     <Container>

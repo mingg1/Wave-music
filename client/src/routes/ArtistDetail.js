@@ -162,15 +162,9 @@ const ArtistDetail = ({ getFetchedComments, state }) => {
                   <ImageCard element={album} type="album" key={album.id} />
                 ))}
             </GridContainer>
-            <SubTitle style={{ marginTop: 24, marginLeft: '5rem' }}>
+            {/* <SubTitle style={{ marginTop: 24, marginLeft: '5rem' }}>
               Related Artists
-            </SubTitle>
-            <GridContainer visible={true}>
-              {data?.relatedArtists &&
-                data?.relatedArtists.map((r) => (
-                  <ImageCard element={r} type={artist?.type} key={r.id} />
-                ))}
-            </GridContainer>
+            </SubTitle> */}
           </div>
           {loggedInUser && <CommentBox getTypeAndId={getTypeAndId} />}
           {Array.isArray(comments) &&

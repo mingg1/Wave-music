@@ -63,7 +63,6 @@ const LikeButton = (props) => {
           userId,
         },
       });
-      console.log(refetchFavorites);
       await refetchFavorites();
     } catch (error) {
       console.error(error);
